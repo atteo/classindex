@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.atteo</groupId>
+		<artifactId>evo-framework</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>evo-classindex-transformer</artifactId>
+	<name>Evo Class Index Transformer</name>
+	<properties>
+		<maven-shade-plugin.version>1.4</maven-shade-plugin.version>
+		<exec-maven-plugin.version>1.2.1</exec-maven-plugin.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-shade-plugin</artifactId>
+			<version>1.4</version>
+			<type>maven-plugin</type>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-invoker-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>install</goal>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
+							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+							<settingsFile>src/it/settings.xml</settingsFile>
+							<noLog>true</noLog>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Put here just to cache plugin artifact for integration tests -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>${exec-maven-plugin.version}</version>
+			</plugin>
+			<!-- Put here just to cache plugin artifact for integration tests -->
+			<plugin>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>${maven-shade-plugin.version}</version>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+
