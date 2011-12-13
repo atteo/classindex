@@ -13,41 +13,50 @@
  */
 package org.atteo.evo.classindex;
 
-import org.atteo.evo.classindex.processor.Important;
+import java.lang.annotation.Documented;
 import java.util.ServiceLoader;
-import org.junit.Test;
-import com.google.common.collect.Iterables;
+
+import org.atteo.evo.classindex.processor.Important;
 import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+import com.google.common.collect.Iterables;
 
 public class ClassIndexTest {
 	@Test
-	public void testSubclasses() {
+	public void subclasses() {
 		Iterable<Class<? extends Service>> services = ClassIndex.getSubclasses(Service.class);
 		assertEquals(2, Iterables.size(services));
 	}
 
 	@Test
-	public void testAnnotated() {
+	public void annotated() {
 		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(Component.class);
 		assertEquals(2, Iterables.size(annotated));
 	}
 
 	@Test
-	public void testPackageSubclasses() {
+	public void packageSubclasses() {
 		Iterable<Class<?>> packageSubclasses = ClassIndex.getPackageClasses(
 				ClassIndexTest.class.getPackage().getName());
 		assertEquals(7, Iterables.size(packageSubclasses));
 	}
 
 	@Test
-	public void testServiceLoader() {
+	public void serviceLoader() {
 		ServiceLoader<Service> loader = ServiceLoader.load(Service.class);
 		assertEquals(2, Iterables.size(loader));
 	}
 
 	@Test
-	public void testIndexedAnnotations() {
+	public void indexedAnnotations() {
 		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(Important.class);
 		assertEquals(2, Iterables.size(annotated));
+	}
+
+	@Test
+	public void notIndexed() {
+		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(Documented.class);
+		assertEquals(0, Iterables.size(annotated));
 	}
 }

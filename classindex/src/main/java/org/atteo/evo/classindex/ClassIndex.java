@@ -42,31 +42,33 @@ import org.atteo.evo.classindex.processor.ClassIndexProcessor;
  * Also to preserve class-index data when creating shaded jar you should use the following
  * Maven configuration:
  * <pre>
- *   &lt;build&gt;
- *     &lt;plugins&gt;
- *       &lt;plugin&gt;
- *         &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
- *         &lt;artifactId&gt;maven-shade-plugin&lt;/artifactId&gt;
- *         &lt;version&gt;1.4&lt;/version&gt;
- *         &lt;executions&gt;
- *           &lt;execution&gt;
- *             &lt;phase&gt;package&lt;/phase&gt;
- *             &lt;goals&gt;
- *               &lt;goal&gt;shade&lt;/goal&gt;
- *             &lt;/goals&gt;
- *             &lt;configuration&gt;
- *               &lt;transformers&gt;
- *                 &lt;transformer implementation=&quot;org.atteo.evo.classindex.ClassIndexTransformer&quot;/&gt;
- *               &lt;/transformers&gt;
- *             &lt;/configuration&gt;
- *           &lt;/execution&gt;
- *         &lt;/executions&gt;
- *         &lt;dependencies&gt;
- *           &lt;groupId&gt;org.atteo&lt;/groupId&gt;
- *           &lt;artifactId&gt;evo-classindex-transformer&lt;/artifactId&gt;
- *       &lt;/plugin&gt;
- *     &lt;/plugins&gt;
- *   &lt;/build&gt;
+ * {@code 
+ * <build>
+ *   <plugins>
+ *     <plugin>
+ *       <groupId>org.apache.maven.plugins</groupId>
+ *       <artifactId>maven-shade-plugin</artifactId>
+ *       <version>1.4</version>
+ *       <executions>
+ *         <execution>
+ *           <phase>package</phase>
+ *           <goals>
+ *             <goal>shade</goal>
+ *           </goals>
+ *           <configuration>
+ *             <transformers>
+ *               <transformer implementation="org.atteo.evo.classindex.ClassIndexTransformer"/>
+ *             </transformers>
+ *           </configuration>
+ *         </execution>
+ *       </executions>
+ *       <dependencies>
+ *         <groupId>org.atteo</groupId>
+ *         <artifactId>evo-classindex-transformer</artifactId>
+ *     </plugin>
+ *   </plugins>
+ * </build>
+ * }
  * </pre>
  * </p>
  */

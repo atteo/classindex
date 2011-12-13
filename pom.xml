@@ -9,7 +9,7 @@
 	<description>
 		Java application framework focused on configurability and ability to unit test.
 	</description>
-	<url>http://atteo.org</url>
+	<url>http://atteo.org/static/evo-framework</url>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
