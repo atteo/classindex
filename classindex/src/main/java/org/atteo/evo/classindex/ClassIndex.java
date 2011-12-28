@@ -65,6 +65,7 @@ import org.atteo.evo.classindex.processor.ClassIndexProcessor;
  *       <dependencies>
  *         <groupId>org.atteo</groupId>
  *         <artifactId>evo-classindex-transformer</artifactId>
+ *       </dependencies>
  *     </plugin>
  *   </plugins>
  * </build>
@@ -91,6 +92,7 @@ public class ClassIndex {
 	 * @param superClass class to find subclasses for
 	 * @return list of subclasses
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> Iterable<Class<? extends T>> getSubclasses(Class<T> superClass) {
 		Iterable<Class<?>> classes = readIndexFile(SUBCLASS_INDEX_PREFIX
 				+ superClass.getCanonicalName());
