@@ -39,6 +39,21 @@
 		<module>classindex-transformer</module>
 		<module>config</module>
 		<module>janino</module>
+		<module>inflector</module>
+		<module>services</module>
+		<module>tests</module>
+		<module>jetty</module>
+		<module>jmx</module>
+		<module>firebuglogger</module>
+		<module>hornetq</module>
+		<module>logback</module>
+		<module>jta</module>
+		<module>jta-atomikos</module>
+		<module>jersey</module>
+		<module>database</module>
+		<module>h2</module>
+		<module>hibernate</module>
+		<module>migrations</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
