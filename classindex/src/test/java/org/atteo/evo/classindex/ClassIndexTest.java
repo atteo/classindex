@@ -36,10 +36,16 @@ public class ClassIndexTest {
 	}
 
 	@Test
+	public void inheritedAnnotation() {
+		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(InheritedAnnotation.class);
+		assertEquals(3, Iterables.size(annotated));
+	}
+
+	@Test
 	public void packageSubclasses() {
 		Iterable<Class<?>> packageSubclasses = ClassIndex.getPackageClasses(
 				ClassIndexTest.class.getPackage().getName());
-		assertEquals(7, Iterables.size(packageSubclasses));
+		assertEquals(8, Iterables.size(packageSubclasses));
 	}
 
 	@Test

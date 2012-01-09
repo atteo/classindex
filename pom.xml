@@ -7,9 +7,13 @@
 	<packaging>pom</packaging>
 	<name>Evo Framework</name>
 	<description>
-		Java application framework focusing on configurability and ability to unit test.
-		Promotes proven solutions and specifically avoids the use of bad and deprecated ones.
-		Separated into layers of usable modules designed to perform specific tasks.
+		Java application development framework focusing on configurability and easy testing.
+		Promotes proven and simple solutions and specifically avoids the use of complicated and deprecated ones.
+
+		It offers modular service framework based on Google Guice, Maven-like configuration management,
+		logging with SLF4J, support for common JavaEE technologies: JDBC, JPA, JMS, JTA, JMX, Java Servlet API, JAX-RS.
+		Promotes fresh approach to JavaEE development with dependency injection, annotation processing,
+		modular design and easy unit testing.
 	</description>
 	<!-- Javadoc adds /apidocs to this URL when it tries to find Javadocs. Make it happy. -->
 	<url>http://atteo.org/static/evo-framework</url>
@@ -38,22 +42,25 @@
 		<module>classindex</module>
 		<module>classindex-transformer</module>
 		<module>config</module>
-		<module>janino</module>
-		<module>inflector</module>
-		<module>services</module>
-		<module>tests</module>
+		<module>config-doclet</module>
 		<module>jetty</module>
-		<module>jmx</module>
-		<module>firebuglogger</module>
-		<module>hornetq</module>
-		<module>logback</module>
-		<module>jta</module>
-		<module>jta-atomikos</module>
 		<module>jersey</module>
 		<module>database</module>
+		<module>firebuglogger</module>
 		<module>h2</module>
 		<module>hibernate</module>
+		<module>hibernate-search</module>
+		<module>hornetq</module>
+		<module>inflector</module>
+		<module>janino</module>
+		<module>jmx</module>
+		<module>jta-atomikos</module>
+		<module>jta</module>
 		<module>migrations</module>
+		<module>services</module>
+		<module>logback</module>
+		<module>tests</module>
+		<module>shiro</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -64,11 +71,12 @@
 		<netbeans.checkstyle.format>true</netbeans.checkstyle.format>
 		<netbeans.hint.license>apache20</netbeans.hint.license>
 
-		<sisu-guice.version>3.1.0</sisu-guice.version>
+		<sisu-guice.version>3.1.1</sisu-guice.version>
 		<jetty.version>8.0.3.v20111011</jetty.version>
 		<jersey.version>1.9.1</jersey.version>
 		<slf4j.version>1.6.3</slf4j.version>
 		<gwt.version>2.4.0</gwt.version>
+		<shiro.version>1.2.0</shiro.version>
 	</properties>
 	<distributionManagement>
 		<snapshotRepository>
@@ -97,7 +105,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.8.2</version>
+				<version>4.10</version>
 			</dependency>
 			<dependency>
 				<groupId>xmlunit</groupId>
@@ -146,6 +154,11 @@
 				<version>${sisu-guice.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.sonatype.sisu.inject</groupId>
+				<artifactId>guice-multibindings</artifactId>
+				<version>${sisu-guice.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>com.google.code.findbugs</groupId>
 				<artifactId>jsr305</artifactId>
 				<version>1.3.9</version>
@@ -183,7 +196,7 @@
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-core-asl</artifactId>
-				<version>1.6.2</version>
+				<version>1.7.3</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
@@ -246,9 +259,20 @@
 				<version>${jersey.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>commons-lang</groupId>
-				<artifactId>commons-lang</artifactId>
-				<version>2.6</version>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.1</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>1.1</version>
+				<exclusions>
+					<exclusion>
+						<groupId>log4j</groupId>
+						<artifactId>log4j</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.hsqldb</groupId>
@@ -266,6 +290,31 @@
 				<version>1.8.2</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-core</artifactId>
+				<version>${shiro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-web</artifactId>
+				<version>${shiro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-guice</artifactId>
+				<version>${shiro.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.google.inject</groupId>
+						<artifactId>guice</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.google.inject.extensions</groupId>
+						<artifactId>guice-multibindings</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
@@ -277,7 +326,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>2.8</version>
+					<version>2.9.1</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-clean-plugin</artifactId>
@@ -308,6 +357,12 @@
 				<plugin>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>2.8</version>
+					<configuration>
+						<links>
+							<link>http://docs.oracle.com/javase/7/docs/jdk/api/javadoc/doclet</link>
+						</links>
+						<detectLinks>true</detectLinks>
+					</configuration>
 				</plugin>
 				<plugin>
 					<artifactId>maven-pmd-plugin</artifactId>
@@ -348,7 +403,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-war-plugin</artifactId>
-					<version>2.1.1</version>
+					<version>2.2</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-invoker-plugin</artifactId>
@@ -448,12 +503,12 @@
 									<goal>aggregate</goal>
 								</goals>
 								<configuration>
-									<doclet>com.lunatech.doclets.jax.jaxb.JAXBDoclet</doclet>
+									<doclet>org.atteo.evo.config.doclet.ConfigDoclet</doclet>
 									<docletArtifacts>
 										<docletArtifact>
-											<groupId>com.lunatech.jax-doclets</groupId>
-											<artifactId>doclets</artifactId>
-											<version>0.9.0</version>
+											<groupId>${project.groupId}</groupId>
+											<artifactId>evo-config-doclet</artifactId>
+											<version>${project.version}</version>
 										</docletArtifact>
 									</docletArtifacts>
 								</configuration>
