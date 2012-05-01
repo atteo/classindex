@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -25,6 +26,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.atteo.evo.classindex.processor.ClassIndexProcessor;
+
+import com.google.common.base.Charsets;
 
 /**
  * Access to the compile-time generated index of classes.
@@ -150,7 +153,8 @@ public class ClassIndex {
 
 			while (resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
-				BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream()));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(),
+						Charsets.UTF_8));
 
 				String line = reader.readLine();
 				while (line != null) {
