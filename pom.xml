@@ -41,27 +41,31 @@
 	<modules>
 		<module>classindex</module>
 		<module>classindex-transformer</module>
-		<module>config</module>
 		<module>config-doclet</module>
-		<module>jetty</module>
-		<module>jersey</module>
+		<module>config</module>
 		<module>database</module>
+		<module>eventbus</module>
 		<module>firebuglogger</module>
 		<module>h2</module>
-		<module>jpa</module>
 		<module>hibernate</module>
 		<module>hibernate-search</module>
 		<module>hornetq</module>
 		<module>inflector</module>
 		<module>janino</module>
+		<module>jersey</module>
+		<module>jetty</module>
 		<module>jmx</module>
+		<module>jpa</module>
 		<module>jta-atomikos</module>
 		<module>jta</module>
+		<module>logback</module>
 		<module>migrations</module>
 		<module>services</module>
-		<module>logback</module>
-		<module>tests</module>
 		<module>shiro</module>
+		<module>tests-eventbus</module>
+		<module>tests-fixtures</module>
+		<module>tests-services</module>
+		<module>tests-shiro</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -237,7 +241,7 @@
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>10.0.1</version>
+				<version>12.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey.contribs</groupId>
