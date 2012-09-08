@@ -2,21 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.atteo</groupId>
-	<artifactId>evo-framework</artifactId>
+	<artifactId>evo-classindex-top</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Evo Framework</name>
+	<name>Evo Class Index Parent</name>
 	<description>
-		Java application development framework focusing on configurability and easy testing.
-		Promotes proven and simple solutions and specifically avoids the use of complicated and deprecated ones.
-
-		It offers modular service framework based on Google Guice, Maven-like configuration management,
-		logging with SLF4J, support for common JavaEE technologies: JDBC, JPA, JMS, JTA, JMX, Java Servlet API, JAX-RS.
-		Promotes fresh approach to JavaEE development with dependency injection, annotation processing,
-		modular design and easy unit testing.
+		Evo Class Index is an annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package.
 	</description>
 	<!-- Javadoc adds /apidocs to this URL when it tries to find Javadocs. Make it happy. -->
-	<url>http://atteo.org/static/evo-framework</url>
+	<url>http://atteo.org/static/evo-classindex</url>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -24,8 +18,8 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>https://code.google.com/p/evo-framework/source/browse/</url>
-		<connection>scm:git:https://code.google.com/p/evo-framework/</connection>
+		<url>https://github.com/sentinelt/evo-classindex</url>
+		<connection>scm:git:https://github.com/sentinelt/evo-classindex.git</connection>
 	</scm>
 	<developers>
 		<developer>
@@ -41,31 +35,6 @@
 	<modules>
 		<module>classindex</module>
 		<module>classindex-transformer</module>
-		<module>config-doclet</module>
-		<module>config</module>
-		<module>database</module>
-		<module>eventbus</module>
-		<module>firebuglogger</module>
-		<module>h2</module>
-		<module>hibernate</module>
-		<module>hibernate-search</module>
-		<module>hornetq</module>
-		<module>inflector</module>
-		<module>janino</module>
-		<module>jersey</module>
-		<module>jetty</module>
-		<module>jmx</module>
-		<module>jpa</module>
-		<module>jta-atomikos</module>
-		<module>jta</module>
-		<module>logback</module>
-		<module>migrations</module>
-		<module>services</module>
-		<module>shiro</module>
-		<module>tests-eventbus</module>
-		<module>tests-fixtures</module>
-		<module>tests-services</module>
-		<module>tests-shiro</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -75,13 +44,6 @@
 		<netbeans.deploy.on.save>false</netbeans.deploy.on.save>
 		<netbeans.checkstyle.format>true</netbeans.checkstyle.format>
 		<netbeans.hint.license>apache20</netbeans.hint.license>
-
-		<sisu-guice.version>3.1.1</sisu-guice.version>
-		<jetty.version>8.1.3.v20120416</jetty.version>
-		<jersey.version>1.9.1</jersey.version>
-		<slf4j.version>1.6.6</slf4j.version>
-		<gwt.version>2.4.0</gwt.version>
-		<shiro.version>1.2.0</shiro.version>
 	</properties>
 	<distributionManagement>
 		<snapshotRepository>
@@ -98,70 +60,9 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>javax.xml.bind</groupId>
-				<artifactId>jaxb-api</artifactId>
-				<version>2.2.4</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.xml.bind</groupId>
-				<artifactId>jaxb-impl</artifactId>
-				<version>2.2.4-1</version>
-			</dependency>
-			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.10</version>
-			</dependency>
-			<dependency>
-				<groupId>xmlunit</groupId>
-				<artifactId>xmlunit</artifactId>
-				<version>1.3</version>
-			</dependency>
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-core</artifactId>
-				<version>1.9.0-rc1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>jul-to-slf4j</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>log4j-over-slf4j</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>0.9.30</version>
-			</dependency>
-			<dependency>
-				<groupId>org.sonatype.sisu</groupId>
-				<artifactId>sisu-guice</artifactId>
-				<version>${sisu-guice.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.sonatype.sisu</groupId>
-						<artifactId>sisu-guava</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.sonatype.sisu.inject</groupId>
-				<artifactId>guice-servlet</artifactId>
-				<version>${sisu-guice.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.sonatype.sisu.inject</groupId>
-				<artifactId>guice-multibindings</artifactId>
-				<version>${sisu-guice.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.code.findbugs</groupId>
@@ -169,170 +70,15 @@
 				<version>1.3.9</version>
 			</dependency> 
 			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-user</artifactId>
-				<version>${gwt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-dev</artifactId>
-				<version>${gwt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-servlet</artifactId>
-				<version>${gwt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-server</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-servlet</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-jmx</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.codehaus.jackson</groupId>
-				<artifactId>jackson-core-asl</artifactId>
-				<version>1.7.3</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>javax.servlet-api</artifactId>
-				<version>3.0.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.json</groupId>
-				<artifactId>json</artifactId>
-				<version>20090211</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.validation</groupId>
-				<artifactId>validation-api</artifactId>
-				<version>1.0.0.GA</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-validator</artifactId>
-				<version>4.3.0.Final</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.transaction</groupId>
-				<artifactId>jta</artifactId>
-				<version>1.1</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.ws.rs</groupId>
-				<artifactId>jsr311-api</artifactId>
-				<version>1.1.1</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.jms</groupId>
-				<artifactId>jms-api</artifactId>
-				<version>1.1-rev-1</version>
-			</dependency>
-			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
 				<version>12.0</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.jersey.contribs</groupId>
-				<artifactId>jersey-guice</artifactId>
-				<version>${jersey.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>com.google.inject.extensions</groupId>
-						<artifactId>guice-servlet</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.google.inject</groupId>
-						<artifactId>guice</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.jersey</groupId>
-				<artifactId>jersey-json</artifactId>
-				<version>${jersey.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>3.1</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-logging</groupId>
-				<artifactId>commons-logging</artifactId>
-				<version>1.1</version>
-				<exclusions>
-					<exclusion>
-						<groupId>log4j</groupId>
-						<artifactId>log4j</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.hsqldb</groupId>
-				<artifactId>hsqldb</artifactId>
-				<version>2.2.4</version>
-			</dependency>
-			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>1.3.167</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.ant</groupId>
-				<artifactId>ant</artifactId>
-				<version>1.8.2</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.shiro</groupId>
-				<artifactId>shiro-core</artifactId>
-				<version>${shiro.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.shiro</groupId>
-				<artifactId>shiro-web</artifactId>
-				<version>${shiro.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.shiro</groupId>
-				<artifactId>shiro-guice</artifactId>
-				<version>${shiro.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>com.google.inject</groupId>
-						<artifactId>guice</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.google.inject.extensions</groupId>
-						<artifactId>guice-multibindings</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<artifactId>maven-antrun-plugin</artifactId>
-					<version>1.7</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>2.9.1</version>
-				</plugin>
 				<plugin>
 					<artifactId>maven-clean-plugin</artifactId>
 					<version>2.4.1</version>
@@ -367,10 +113,6 @@
 					</configuration>
 				</plugin>
 				<plugin>
-					<artifactId>maven-pmd-plugin</artifactId>
-					<version>2.5</version>
-				</plugin>
-				<plugin>
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.2.2</version>
 				</plugin>
@@ -387,12 +129,6 @@
 					<version>2.12</version>
 					<configuration>
 						<useFile>false</useFile>
-						<systemProperties>
-							<property>
-								<name>derby.stream.error.file</name>
-								<value>target/derby.log</value>
-							</property>
-						</systemProperties>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -411,48 +147,11 @@
 					<artifactId>maven-invoker-plugin</artifactId>
 					<version>1.5</version>
 				</plugin>
-				<plugin>
-					<artifactId>maven-site-plugin</artifactId>
-					<version>3.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>findbugs-maven-plugin</artifactId>
-					<version>2.4.0</version>
-					<configuration>
-						<failOnError>false</failOnError>
-						<effort>Max</effort>
-						<!--
-						<excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
-						-->
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>jetty-maven-plugin</artifactId>
-					<version>8.0.3.v20111011</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>1.7</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>gwt-maven-plugin</artifactId>
-					<version>2.4.0</version>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
 
 	<profiles>
-		<profile>
-			<id>examples</id>
-			<modules>
-				<module>examples</module>
-			</modules>
-		</profile>
 		<profile>
 			<id>release</id>
 			<build>
@@ -494,88 +193,6 @@
 				</plugins>
 			</build>
 		</profile>
-		<profile>
-			<id>service-docs</id>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>default-cli</id>
-								<goals>
-									<goal>aggregate</goal>
-								</goals>
-								<configuration>
-									<doclet>org.atteo.evo.config.doclet.ConfigDoclet</doclet>
-									<docletArtifacts>
-										<docletArtifact>
-											<groupId>${project.groupId}</groupId>
-											<artifactId>evo-config-doclet</artifactId>
-											<version>${project.version}</version>
-										</docletArtifact>
-									</docletArtifacts>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>endorsed</id>
-			<activation>
-				<property>
-					<name>sun.boot.class.path</name>
-				</property>
-			</activation>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<artifactId>maven-compiler-plugin</artifactId>
-							<configuration>
-								<!-- javaee6 contains upgrades of APIs contained within the JDK itself.
-								As such these need to be placed on the bootclasspath, rather than classpath of the
-								compiler.
-								If you don't make use of these new updated API, you can delete the profile.
-								On non-SUN jdk, you will need to create a similar profile for your jdk, with the similar property as sun.boot.class.path in Sun's JDK.-->
-								<compilerArguments>
-									<bootclasspath>${settings.localRepository}/javax/javaee-endorsed-api/6.0/javaee-endorsed-api-6.0.jar${path.separator}${sun.boot.class.path}</bootclasspath>
-								</compilerArguments>
-							</configuration>
-							<dependencies>
-								<dependency>
-									<groupId>javax</groupId>
-									<artifactId>javaee-endorsed-api</artifactId>
-									<version>6.0</version>
-								</dependency>
-							</dependencies>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-			</build>
-		</profile>
-		<profile>
-			<id>jrebel</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.zeroturnaround</groupId>
-						<artifactId>jrebel-maven-plugin</artifactId>
-						<version>1.1.0</version>
-						<executions>
-							<execution>
-								<id>generate-rebel-xml</id>
-								<phase>process-resources</phase>
-								<goals>
-									<goal>generate</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 	</profiles>
 </project>
+
