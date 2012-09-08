@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.atteo</groupId>
 		<artifactId>evo-classindex-top</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0</version>
 	</parent>
 	<artifactId>evo-classindex</artifactId>
 	<name>Evo Class Index</name>
