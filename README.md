@@ -40,8 +40,8 @@ You can download the library from [here](http://search.maven.org/remotecontent?f
 
 ```xml
 <dependency>
-    <groupid>atteo.org</groupid>
-    <artifactid>evo-classindex</artifactid>
+    <groupId>org.atteo</groupId>
+    <artifactId>evo-classindex</artifactId>
     <version>1.0</version>
 </dependency>
 ```
