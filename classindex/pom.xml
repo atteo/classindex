@@ -34,6 +34,26 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>default-testCompile</id>
+						<configuration>
+							<testExcludes>
+								<exclude>org/atteo/evo/classindex/SecondService.java</exclude>
+							</testExcludes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>compileSecondService</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<testIncludes>
+								<includes>org/atteo/evo/classindex/SecondService.java</includes>
+							</testIncludes>
+						</configuration>
+					</execution>
+					<execution>
 						<id>compile-important-processor</id>
 						<phase>process-test-sources</phase>
 						<goals>
