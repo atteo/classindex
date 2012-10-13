@@ -13,7 +13,10 @@
  */
 package org.atteo.evo.classindex.processor;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.lang.annotation.Inherited;
 import java.util.Collections;
@@ -88,7 +91,6 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		super.init(processingEnv);
 		types = processingEnv.getTypeUtils();
 		filer = processingEnv.getFiler();
-
 	}
 
 	@Override
@@ -136,15 +138,15 @@ public class ClassIndexProcessor extends AbstractProcessor {
 			}
 
 			for (TypeElement element : subclassMap.keySet()) {
-				writeElements(subclassMap.get(element), ClassIndex.SUBCLASS_INDEX_PREFIX
+				writeIndexFile(subclassMap.get(element), ClassIndex.SUBCLASS_INDEX_PREFIX
 						+ element.getQualifiedName().toString());
 			}
 			for (TypeElement element : annotatedMap.keySet()) {
-				writeElements(annotatedMap.get(element), ClassIndex.ANNOTATED_INDEX_PREFIX
+				writeIndexFile(annotatedMap.get(element), ClassIndex.ANNOTATED_INDEX_PREFIX
 						+ element.getQualifiedName().toString());
 			}
 			for (PackageElement element : packageMap.keySet()) {
-				writeElements(packageMap.get(element), element.getQualifiedName().toString()
+				writeIndexFile(packageMap.get(element), element.getQualifiedName().toString()
 						.replace(".", "/")
 						+ "/" + ClassIndex.PACKAGE_INDEX_NAME);
 			}
@@ -155,13 +157,39 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		return false;
 	}
 
-	private void writeElements(Iterable<TypeElement> elementList, String resourceName)
+	private void readOldIndexFile(Set<String> entries, String resourceName) throws IOException {
+		BufferedReader reader = null;
+		try {
+			FileObject resource = filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourceName);
+			Reader resourceReader = resource.openReader(true);
+			reader = new BufferedReader(resourceReader);
+
+			String line = reader.readLine();
+			while (line != null) {
+				entries.add(line);
+				line = reader.readLine();
+			}
+		} catch (FileNotFoundException e) {
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+	}
+
+	private void writeIndexFile(Iterable<TypeElement> elementList, String resourceName)
 			throws IOException {
+		Set<String> entries = new HashSet<String>();
+		for (TypeElement element : elementList) {
+			entries.add(element.getQualifiedName().toString());
+		}
+
+		readOldIndexFile(entries, resourceName);
 
 		FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceName);
 		Writer writer = file.openWriter();
-		for (TypeElement element : elementList) {
-			writer.write(element.getQualifiedName().toString());
+		for (String entry : entries) {
+			writer.write(entry);
 			writer.write("\n");
 		}
 		writer.close();
