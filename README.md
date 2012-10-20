@@ -4,6 +4,13 @@ Evo Class Index is much quicker alternative to every run-time annotation scannin
 
 Evo Class Index is an annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package. Java 6 will automatically [discover](http://www.jcp.org/en/jsr/detail?id=269) the processor from the classpath. 
 
+Changes
+=======
+
+Version 1.1
+
+- Fix incremental compilation (#1)
+
 
 Usage
 =====
@@ -36,13 +43,13 @@ For classes inside given package the index file is named "jaxb.index", it is loc
 Download
 ========
 
-You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/evo-classindex/1.0/evo-classindex-1.0.jar) or use the following Maven dependency:
+You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/evo-classindex/1.1/evo-classindex-1.1.jar) or use the following Maven dependency:
 
 ```xml
 <dependency>
     <groupId>org.atteo</groupId>
     <artifactId>evo-classindex</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
