@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-shade-plugin</artifactId>
-			<version>${maven-share-plugni.version}</version>
+			<version>${maven-shade-plugin.version}</version>
 			<type>maven-plugin</type>
 			<scope>provided</scope>
 		</dependency>
