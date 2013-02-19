@@ -34,7 +34,7 @@ import com.google.common.base.Charsets;
  * <p>
  * Use &#064;{@link IndexAnnotated} and &#064;{@link IndexSubclasses} annotations to force the classes to be indexed.
  * </p>
- * 
+ *
  * <p>
  * Keep in mind that the class is indexed only when it is compiled with
  * evo-classindex.jar file in classpath.
@@ -44,7 +44,7 @@ import com.google.common.base.Charsets;
  * Also to preserve class-index data when creating shaded jar you should use the following
  * Maven configuration:
  * <pre>
- * {@code 
+ * {@code
  * <build>
  *   <plugins>
  *     <plugin>
@@ -81,6 +81,7 @@ public class ClassIndex {
 	public static final String PACKAGE_INDEX_NAME = "jaxb.index";
 
 	private ClassIndex() {
+
 	}
 
 	/**

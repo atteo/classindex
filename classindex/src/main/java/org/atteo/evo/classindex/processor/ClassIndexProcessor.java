@@ -170,6 +170,10 @@ public class ClassIndexProcessor extends AbstractProcessor {
 				line = reader.readLine();
 			}
 		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+			// Thrown by Eclipse JDT when not found
+		} catch (UnsupportedOperationException e) {
+			// Java6 does not support reading old index files
 		} finally {
 			if (reader != null) {
 				reader.close();

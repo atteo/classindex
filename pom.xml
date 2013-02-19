@@ -25,7 +25,7 @@
 		<module>classindex-transformer</module>
 	</modules>
 	<scm>
-		<connection>scm:git:https://github.com/sentinelt/evo-classindex.git</connection>
-		<url>https://github.com/sentinelt/evo-classindex</url>
+		<connection>scm:git:https://github.com/atteo/evo-classindex.git</connection>
+		<url>https://github.com/atteo/evo-classindex</url>
 	</scm>
 </project>
