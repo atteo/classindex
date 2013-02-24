@@ -55,7 +55,10 @@ public class ClassIndexProcessor extends AbstractProcessor {
 	private Multimap<TypeElement, TypeElement> annotatedMap = HashMultimap.create();
 	private Multimap<PackageElement, TypeElement> packageMap = HashMultimap.create();
 
+	private boolean annotationDriven = true;
 	private Set<String> indexedAnnotations;
+	private Set<String> indexedSuperclasses = new HashSet<String>();
+	private Set<String> indexedPackages = new HashSet<String>();
 
 	private Types types;
 	private Filer filer;
@@ -71,9 +74,32 @@ public class ClassIndexProcessor extends AbstractProcessor {
 	 */
 	protected ClassIndexProcessor(Class<?>... classes) {
 		indexedAnnotations = new HashSet<String>();
+		if (classes.length == 0) {
+			return;
+		}
+		annotationDriven = false;
 		for (Class<?> klass : classes) {
 			indexedAnnotations.add(klass.getCanonicalName());
 		}
+	}
+
+	public void indexAnnotations(Class<?>... classes) {
+		for (Class<?> klass : classes) {
+			indexedAnnotations.add(klass.getCanonicalName());
+		}
+		annotationDriven = false;
+	}
+
+	public void indexSubclasses(Class<?>... classes) {
+		for (Class<?> klass : classes) {
+			indexedSuperclasses.add(klass.getCanonicalName());
+		}
+		annotationDriven = false;
+	}
+
+	public void indexPackages(String... packages) {
+		Collections.addAll(indexedPackages, packages);
+		annotationDriven = false;
 	}
 
 	@Override
@@ -103,32 +129,22 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 				TypeElement typeElement = (TypeElement) element;
 
-				if (!indexedAnnotations.isEmpty()) {
-					for (AnnotationMirror mirror : element.getAnnotationMirrors()) {
-						TypeElement annotationElement = (TypeElement) mirror.getAnnotationType()
-								.asElement();
-
-						if (indexedAnnotations.contains(annotationElement.getQualifiedName().toString())) {
-							annotatedMap.put(annotationElement, typeElement);
-						}
-					}
-
-					continue;
-				}
-
 				for (AnnotationMirror mirror : element.getAnnotationMirrors()) {
 					TypeElement annotationElement = (TypeElement) mirror.getAnnotationType()
 							.asElement();
 
-					if (annotationElement.getAnnotation(IndexAnnotated.class) != null) {
+					if (indexedAnnotations.contains(annotationElement.getQualifiedName().toString())
+							|| (annotationDriven && annotationElement.getAnnotation(IndexAnnotated.class) != null)) {
 						annotatedMap.put(annotationElement, typeElement);
 					}
 				}
+
 				indexSupertypes(typeElement, typeElement, annotatedMap);
 
 				// root elements are enclosed by packages
 				PackageElement packageElement = (PackageElement) element.getEnclosingElement();
-				if (packageElement.getAnnotation(IndexSubclasses.class) != null) {
+				if (indexedPackages.contains(packageElement.getQualifiedName().toString())
+						|| (annotationDriven && packageElement.getAnnotation(IndexSubclasses.class) != null)) {
 					packageMap.put(packageElement, typeElement);
 				}
 			}
@@ -213,14 +229,16 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 			DeclaredType superType = (DeclaredType) mirror;
 			TypeElement superTypeElement = (TypeElement) superType.asElement();
-			if (superTypeElement.getAnnotation(IndexSubclasses.class) != null) {
+			if (indexedSuperclasses.contains(superTypeElement.getQualifiedName().toString())
+					|| (annotationDriven && superTypeElement.getAnnotation(IndexSubclasses.class) != null)) {
 				subclassMap.put(superTypeElement, rootElement);
 			}
 
 			for (AnnotationMirror annotationMirror : superTypeElement.getAnnotationMirrors()) {
 				TypeElement annotationElement = (TypeElement) annotationMirror.getAnnotationType()
 						.asElement();
-				if (annotationElement.getAnnotation(IndexAnnotated.class) != null
+				if ((indexedAnnotations.contains(annotationElement.getQualifiedName().toString())
+						|| (annotationDriven && annotationElement.getAnnotation(IndexAnnotated.class) != null))
 						&& annotationElement.getAnnotation(Inherited.class) != null) {
 					annotatedMap.put(annotationElement, rootElement);
 				}

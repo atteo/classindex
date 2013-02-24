@@ -124,10 +124,8 @@ public class ClassIndex {
 	 * @return list of classes from package
 	 */
 	public static Iterable<Class<?>> getPackageClasses(String packageName) {
-		return readIndexFile(packageName.replace(".", "/") + "/"+ PACKAGE_INDEX_NAME);
+		return readIndexFile(packageName.replace(".", "/") + "/" + PACKAGE_INDEX_NAME);
 	}
-
-
 
 	/**
 	 * Retrieves a list of classes annotated by given annotation.
@@ -161,7 +159,7 @@ public class ClassIndex {
 					Class<?> klass;
 					try {
 						klass = Thread.currentThread().getContextClassLoader().loadClass(line);
-					} catch(ClassNotFoundException e) {
+					} catch (ClassNotFoundException e) {
 						throw new RuntimeException("Evo Class Index: Class not found '"
 								+ line + "' listed in '" + resource.toExternalForm() + "'", e);
 					}

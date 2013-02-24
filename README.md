@@ -2,7 +2,7 @@ About
 =====
 Evo Class Index is much quicker alternative to every run-time annotation scanning library like Reflections or Scannotations.
 
-Evo Class Index is an annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package. Java 6 will automatically [discover](http://www.jcp.org/en/jsr/detail?id=269) the processor from the classpath. 
+Evo Class Index is an annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package. Java 6 will automatically [discover](http://www.jcp.org/en/jsr/detail?id=269) the processor from the classpath.
 
 Changes
 =======

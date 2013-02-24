@@ -25,13 +25,25 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>compile-processor</id>
-						<phase>process-sources</phase>
+						<id>default-compile</id>
 						<goals>
 							<goal>compile</goal>
 						</goals>
 						<configuration>
 							<proc>none</proc>
+						</configuration>
+					</execution>
+					<execution>
+						<id>compile-important-processor</id>
+						<phase>process-test-sources</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<proc>none</proc>
+							<testIncludes>
+								<include>org/atteo/evo/classindex/processor/*</include>
+							</testIncludes>
 						</configuration>
 					</execution>
 					<execution>
@@ -51,19 +63,6 @@
 						<configuration>
 							<testIncludes>
 								<includes>org/atteo/evo/classindex/SecondService.java</includes>
-							</testIncludes>
-						</configuration>
-					</execution>
-					<execution>
-						<id>compile-important-processor</id>
-						<phase>process-test-sources</phase>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-						<configuration>
-							<proc>none</proc>
-							<testIncludes>
-								<include>org/atteo/evo/classindex/processor/*</include>
 							</testIncludes>
 						</configuration>
 					</execution>

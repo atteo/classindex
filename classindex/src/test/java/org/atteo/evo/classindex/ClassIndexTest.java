@@ -17,6 +17,8 @@ import java.lang.annotation.Documented;
 import java.util.ServiceLoader;
 
 import org.atteo.evo.classindex.processor.Important;
+import org.atteo.evo.classindex.processor.Plugin;
+import org.atteo.evo.classindex.second.ExtraPlugin;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -58,6 +60,18 @@ public class ClassIndexTest {
 	public void indexedAnnotations() {
 		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(Important.class);
 		assertEquals(2, Iterables.size(annotated));
+	}
+
+	@Test
+	public void indexedSubclasses() {
+		Iterable<Class<? extends Plugin>> plugins = ClassIndex.getSubclasses(Plugin.class);
+		assertEquals(2, Iterables.size(plugins));
+	}
+
+	@Test
+	public void indexedPackages() {
+		Iterable<Class<?>> classes = ClassIndex.getPackageClasses(ExtraPlugin.class.getPackage().getName());
+		assertEquals(1, Iterables.size(classes));
 	}
 
 	@Test
