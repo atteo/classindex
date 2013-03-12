@@ -53,13 +53,13 @@ For classes inside given package the index file is named "jaxb.index", it is loc
 Download
 ========
 
-You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/evo-classindex/1.2/evo-classindex-1.2.jar) or use the following Maven dependency:
+You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/evo-classindex/1.3/evo-classindex-1.3.jar) or use the following Maven dependency:
 
 ```xml
 <dependency>
     <groupId>org.atteo</groupId>
     <artifactId>evo-classindex</artifactId>
-    <version>1.2</version>
+    <version>1.3</version>
 </dependency>
 ```
 
