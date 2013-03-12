@@ -160,8 +160,8 @@ public class ClassIndex {
 					try {
 						klass = Thread.currentThread().getContextClassLoader().loadClass(line);
 					} catch (ClassNotFoundException e) {
-						throw new RuntimeException("Evo Class Index: Class not found '"
-								+ line + "' listed in '" + resource.toExternalForm() + "'", e);
+						line = reader.readLine();
+						continue;
 					}
 					classes.add(klass);
 
