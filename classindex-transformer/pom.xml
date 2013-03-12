@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>evo-classindex-top</artifactId>
 		<groupId>org.atteo</groupId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.3</version>
 	</parent>
 	<artifactId>evo-classindex-transformer</artifactId>
 	<name>Evo Class Index Transformer</name>
