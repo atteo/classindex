@@ -50,6 +50,12 @@ For subclasses of the given class the index file name and format is compatible w
 
 For classes inside given package the index file is named "jaxb.index", it is located inside the package folder and it's format is compatible with what [JAXBContext.newInstance(String)](http://docs.oracle.com/javase/7/docs/api/javax/xml/bind/JAXBContext.html#newInstance(java.lang.String)) expects.
 
+Eclipse
+=======
+Eclipse uses its own Java compiler which is not strictly standard compliant and requires extra configuration.
+In Java Compiler -> Annotation Processing -> Factory Path you need to add both evo-classindex and Guava jar files.
+See the [screenshot](https://github.com/atteo/evo-classindex/issues/5#issuecomment-15365420).
+
 Download
 ========
 
