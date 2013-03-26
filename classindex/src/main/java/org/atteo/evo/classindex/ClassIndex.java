@@ -14,6 +14,7 @@
 package org.atteo.evo.classindex;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
@@ -151,8 +152,18 @@ public class ClassIndex {
 
 			while (resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
-				BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(),
-						Charsets.UTF_8));
+				BufferedReader reader;
+				try {
+					reader = new BufferedReader(new InputStreamReader(resource.openStream(),
+								Charsets.UTF_8));
+				} catch (FileNotFoundException e) {
+					// When executed under Tomcat started from Eclipse with "Serve modules without
+					// publishing" option turned on, getResources() method above returns the same
+					// resource two times: first with incorrect path and second time with correct one.
+					// So ignore the one which does not exist.
+					// See: https://github.com/atteo/evo-classindex/issues/5
+					continue;
+				}
 
 				String line = reader.readLine();
 				while (line != null) {

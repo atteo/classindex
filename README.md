@@ -7,10 +7,14 @@ Evo Class Index is an annotation processor which at compile-time generates an in
 Changes
 =======
 
+Version 1.4
+
+- Fix FileNotFoundException when executed under Tomcat from Eclipse
+
 Version 1.3
 
-- Ignore classes which don't exist at runtime (#4)
-    This fixes some issues Eclipse
+- Ignore classes which don't exist at runtime (#4).
+    This fixes some issues in Eclipse.
 - Allow to create custom processors which index subclasses and packages
 
 Version 1.2

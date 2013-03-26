@@ -47,7 +47,7 @@ public class ClassIndexTest {
 	public void packageSubclasses() {
 		Iterable<Class<?>> packageSubclasses = ClassIndex.getPackageClasses(
 				ClassIndexTest.class.getPackage().getName());
-		assertEquals(8, Iterables.size(packageSubclasses));
+		assertEquals(9, Iterables.size(packageSubclasses));
 	}
 
 	@Test
