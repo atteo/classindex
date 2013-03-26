@@ -63,13 +63,13 @@ See the [screenshot](https://github.com/atteo/evo-classindex/issues/5#issuecomme
 Download
 ========
 
-You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/evo-classindex/1.3/evo-classindex-1.3.jar) or use the following Maven dependency:
+You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/evo-classindex/1.4/evo-classindex-1.4.jar) or use the following Maven dependency:
 
 ```xml
 <dependency>
     <groupId>org.atteo</groupId>
     <artifactId>evo-classindex</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
 </dependency>
 ```
 
