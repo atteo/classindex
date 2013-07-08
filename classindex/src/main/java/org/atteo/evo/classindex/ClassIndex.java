@@ -98,9 +98,8 @@ public class ClassIndex {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Iterable<Class<? extends T>> getSubclasses(Class<T> superClass) {
-		Iterable<Class<?>> classes = readIndexFile(SUBCLASS_INDEX_PREFIX
-				+ superClass.getCanonicalName());
-		List<Class<? extends T>> subclasses = new ArrayList<Class<? extends T>>();
+		Iterable<Class<?>> classes = readIndexFile(SUBCLASS_INDEX_PREFIX + superClass.getCanonicalName());
+		List<Class<? extends T>> subclasses = new ArrayList<>();
 
 		for (Class<?> klass : classes) {
 			if (!superClass.isAssignableFrom(klass)) {
@@ -144,7 +143,7 @@ public class ClassIndex {
 	}
 
 	private static Iterable<Class<?>> readIndexFile(String resourceFile) {
-		Set<Class<?>> classes = new HashSet<Class<?>>();
+		Set<Class<?>> classes = new HashSet<>();
 
 		try {
 			Enumeration<URL> resources = Thread.currentThread().getContextClassLoader()

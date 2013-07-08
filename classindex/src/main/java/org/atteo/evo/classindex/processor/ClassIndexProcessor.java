@@ -57,8 +57,8 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 	private boolean annotationDriven = true;
 	private Set<String> indexedAnnotations;
-	private Set<String> indexedSuperclasses = new HashSet<String>();
-	private Set<String> indexedPackages = new HashSet<String>();
+	private Set<String> indexedSuperclasses = new HashSet<>();
+	private Set<String> indexedPackages = new HashSet<>();
 
 	private Types types;
 	private Filer filer;
@@ -73,7 +73,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 	 * @param classes list of classes which the processor will be indexing
 	 */
 	protected ClassIndexProcessor(Class<?>... classes) {
-		indexedAnnotations = new HashSet<String>();
+		indexedAnnotations = new HashSet<>();
 		if (classes.length == 0) {
 			return;
 		}
@@ -199,7 +199,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 	private void writeIndexFile(Iterable<TypeElement> elementList, String resourceName)
 			throws IOException {
-		Set<String> entries = new HashSet<String>();
+		Set<String> entries = new HashSet<>();
 		for (TypeElement element : elementList) {
 			entries.add(element.getQualifiedName().toString());
 		}
@@ -207,12 +207,12 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		readOldIndexFile(entries, resourceName);
 
 		FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceName);
-		Writer writer = file.openWriter();
-		for (String entry : entries) {
-			writer.write(entry);
-			writer.write("\n");
+		try (Writer writer = file.openWriter()) {
+			for (String entry : entries) {
+				writer.write(entry);
+				writer.write("\n");
+			}
 		}
-		writer.close();
 	}
 
 	/**
