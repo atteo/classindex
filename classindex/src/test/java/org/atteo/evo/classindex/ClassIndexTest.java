@@ -16,77 +16,101 @@ package org.atteo.evo.classindex;
 import java.lang.annotation.Documented;
 import java.util.ServiceLoader;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.atteo.evo.classindex.processor.Important;
 import org.atteo.evo.classindex.processor.Plugin;
 import org.atteo.evo.classindex.second.ExtraPlugin;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-import com.google.common.collect.Iterables;
-
 public class ClassIndexTest {
 	@Test
-	public void subclasses() {
+	@SuppressWarnings("unchecked")
+	public void shouldIndexSubclasses() {
+		// when
 		Iterable<Class<? extends Service>> services = ClassIndex.getSubclasses(Service.class);
-		assertEquals(2, Iterables.size(services));
+		// then
+		assertThat(services).containsOnly(FirstService.class, SecondService.class);
 	}
 
 	@Test
-	public void annotated() {
+	public void shouldIndexAnnotated() {
+		// when
 		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(Component.class);
-		assertEquals(2, Iterables.size(annotated));
+		// then
+		assertThat(annotated).containsOnly(FirstComponent.class, SecondComponent.class);
 	}
 
 	@Test
-	public void inheritedAnnotation() {
+	public void shouldIndexWhenAnnotationIsInherited() {
+		// when
 		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(InheritedAnnotation.class);
-		assertEquals(3, Iterables.size(annotated));
+		// then
+		assertThat(annotated).containsOnly(Service.class, FirstService.class, SecondService.class);
 	}
 
 	@Test
-	public void packageSubclasses() {
+	public void shouldIndexClassesInsidePackage() {
+		// when
 		Iterable<Class<?>> packageSubclasses = ClassIndex.getPackageClasses(
 				ClassIndexTest.class.getPackage().getName());
-		assertEquals(9, Iterables.size(packageSubclasses));
+		// then
+		assertThat(packageSubclasses).contains(FirstComponent.class, Component.class);
 	}
 
 	@Test
-	public void serviceLoader() {
+	public void shouldSuportServiceLoader() {
+		// when
 		ServiceLoader<Service> loader = ServiceLoader.load(Service.class);
-		assertEquals(2, Iterables.size(loader));
+		// then
+		assertThat(loader).hasSize(2);
 	}
 
 	@Test
-	public void indexedAnnotations() {
+	public void customProcessorShouldIndexAnnotated() {
+		// when
 		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(Important.class);
-		assertEquals(2, Iterables.size(annotated));
+		// then
+		assertThat(annotated).containsOnly(FirstComponent.class, FirstService.class);
 	}
 
 	@Test
-	public void indexedSubclasses() {
+	@SuppressWarnings("unchecked")
+	public void customProcessorShouldIndexSubclasses() {
+		// when
 		Iterable<Class<? extends Plugin>> plugins = ClassIndex.getSubclasses(Plugin.class);
-		assertEquals(2, Iterables.size(plugins));
+		// then
+		assertThat(plugins).containsOnly(FirstComponent.class, ExtraPlugin.class);
 	}
 
 	@Test
-	public void indexedPackages() {
+	public void customProcessorShouldIndexPackages() {
+		// when
 		Iterable<Class<?>> classes = ClassIndex.getPackageClasses(ExtraPlugin.class.getPackage().getName());
-		assertEquals(1, Iterables.size(classes));
+		// then
+		assertThat(classes).containsOnly(ExtraPlugin.class);
 	}
 
 	@Test
-	public void notIndexed() {
+	public void shouldNotIndexNotAnnotated() {
+		// when
 		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(Documented.class);
-		assertEquals(0, Iterables.size(annotated));
+		// then
+		assertThat(annotated).isEmpty();
 	}
 
 	@Test
 	public void shouldNotStoreSummaryByDefault() {
-		assertEquals(null, ClassIndex.getClassSummary(FirstService.class));
+		assertThat(ClassIndex.getClassSummary(FirstService.class)).isNull();
 	}
 
 	@Test
-	public void shouldStoreSummary() {
+	public void shouldStoreSummaryForAnnotated() {
 		assertEquals("First component", ClassIndex.getClassSummary(FirstComponent.class));
+	}
+
+	@Test
+	public void shouldStoreSummaryForSubclasses() {
+		assertEquals("First module", ClassIndex.getClassSummary(FirstModule.class));
 	}
 }

@@ -24,7 +24,7 @@ import org.atteo.evo.classindex.processor.ClassIndexProcessor;
 
 /**
  * Index all subclasses of the annotated class or package.
- * 
+ *
  * <p>
  * During compilation {@link ClassIndexProcessor} creates a resource files listing all classes
  * extending annotated class or located inside annotated package.
@@ -44,4 +44,12 @@ import org.atteo.evo.classindex.processor.ClassIndexProcessor;
 @Documented
 @Target({ ElementType.TYPE, ElementType.PACKAGE })
 public @interface IndexSubclasses {
+	/**
+	 * Specifies whether to store Javadoc for runtime retrieval.
+	 *
+	 * <p>
+	 * You can retrieve the stored Javadoc summary using {@link ClassIndex#getSummary(Class)}.
+	 * </p>
+	 */
+	boolean storeJavadoc() default false;
 }

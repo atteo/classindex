@@ -142,10 +142,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 				// root elements are enclosed by packages
 				PackageElement packageElement = (PackageElement) element.getEnclosingElement();
-				if (indexedPackages.contains(packageElement.getQualifiedName().toString())
-						|| (annotationDriven && packageElement.getAnnotation(IndexSubclasses.class) != null)) {
-					packageMap.put(packageElement, typeElement);
-				}
+				storeClassFromPackage(packageElement, typeElement);
 			}
 
 			if (!roundEnv.processingOver()) {
@@ -234,10 +231,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 			DeclaredType superType = (DeclaredType) mirror;
 			TypeElement superTypeElement = (TypeElement) superType.asElement();
-			if (indexedSuperclasses.contains(superTypeElement.getQualifiedName().toString())
-					|| (annotationDriven && superTypeElement.getAnnotation(IndexSubclasses.class) != null)) {
-				subclassMap.put(superTypeElement, rootElement);
-			}
+			storeSubclass(superTypeElement, rootElement);
 
 			for (AnnotationMirror annotationMirror : superTypeElement.getAnnotationMirrors()) {
 				TypeElement annotationElement = (TypeElement) annotationMirror.getAnnotationType()
@@ -259,7 +253,42 @@ public class ClassIndexProcessor extends AbstractProcessor {
 			IndexAnnotated indexAnnotated = annotationElement.getAnnotation(IndexAnnotated.class);
 			if (indexAnnotated != null) {
 				annotatedMap.put(annotationElement, rootElement);
-				storeJavadoc(rootElement);
+				if (indexAnnotated.storeJavadoc()) {
+					storeJavadoc(rootElement);
+				}
+			}
+		}
+	}
+
+	private void storeSubclass(TypeElement superTypeElement, TypeElement rootElement) throws IOException {
+		if (indexedSuperclasses.contains(superTypeElement.getQualifiedName().toString())) {
+			subclassMap.put(superTypeElement, rootElement);
+		} else if (annotationDriven) {
+			IndexSubclasses indexSubclasses = superTypeElement.getAnnotation(IndexSubclasses.class);
+			if (indexSubclasses != null) {
+				subclassMap.put(superTypeElement, rootElement);
+
+				if (indexSubclasses.storeJavadoc()) {
+					storeJavadoc(rootElement);
+				}
+			}
+		}
+		if (indexedSuperclasses.contains(superTypeElement.getQualifiedName().toString())
+				|| (annotationDriven && superTypeElement.getAnnotation(IndexSubclasses.class) != null)) {
+			subclassMap.put(superTypeElement, rootElement);
+		}
+	}
+
+	private void storeClassFromPackage(PackageElement packageElement, TypeElement rootElement) throws IOException {
+		if (indexedPackages.contains(packageElement.getQualifiedName().toString())) {
+			packageMap.put(packageElement, rootElement);
+		} else if (annotationDriven) {
+			IndexSubclasses indexSubclasses = packageElement.getAnnotation(IndexSubclasses.class);
+			if (indexSubclasses != null) {
+				packageMap.put(packageElement, rootElement);
+				if (indexSubclasses.storeJavadoc()) {
+					storeJavadoc(rootElement);
+				}
 			}
 		}
 	}
