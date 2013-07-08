@@ -60,6 +60,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 	private Set<String> indexedAnnotations;
 	private Set<String> indexedSuperclasses = new HashSet<>();
 	private Set<String> indexedPackages = new HashSet<>();
+	private Set<TypeElement> javadocAlreadyStored = new HashSet<>();
 
 	private Types types;
 	private Filer filer;
@@ -294,6 +295,11 @@ public class ClassIndexProcessor extends AbstractProcessor {
 	}
 
 	private void storeJavadoc(TypeElement element) throws IOException {
+		if (javadocAlreadyStored.contains(element)) {
+			return;
+		}
+		javadocAlreadyStored.add(element);
+
 		String docComment = elementUtils.getDocComment(element);
 		if (docComment == null) {
 			return;

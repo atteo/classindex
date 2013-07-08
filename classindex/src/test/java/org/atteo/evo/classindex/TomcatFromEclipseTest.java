@@ -20,10 +20,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
-
-import com.google.common.collect.Iterables;
 
 public class TomcatFromEclipseTest {
     private static class WeirdClassLoader extends ClassLoader {
@@ -77,7 +75,7 @@ public class TomcatFromEclipseTest {
 
         try {
             Iterable<Class<?>> annotated = ClassIndex.getAnnotated(Component.class);
-            assertEquals(2, Iterables.size(annotated));
+			assertThat(annotated).containsOnly(FirstComponent.class, SecondComponent.class);
         } finally {
             Thread.currentThread().setContextClassLoader(original);
         }
