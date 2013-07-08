@@ -80,6 +80,7 @@ public class ClassIndex {
 	public static final String SUBCLASS_INDEX_PREFIX = "META-INF/services/";
 	public static final String ANNOTATED_INDEX_PREFIX = "META-INF/annotations/";
 	public static final String PACKAGE_INDEX_NAME = "jaxb.index";
+	public static final String JAVADOC_PREFIX = "META-INF/javadocs/";
 
 	private ClassIndex() {
 
@@ -142,6 +143,50 @@ public class ClassIndex {
 		return readIndexFile(ANNOTATED_INDEX_PREFIX + annotation.getCanonicalName());
 	}
 
+	/**
+	 * Returns the Javadoc summary for given class.
+	 * <p>
+	 * Javadoc summary is the first sentence of a Javadoc.
+	 * </p>
+	 * <p>
+	 * You need to use {@link IndexSubclasses} or {@link IndexAnnotated} with {@link IndexAnnotated#storeJavadoc()}
+	 * set to true.
+	 * </p>
+	 * @param klass class to retrieve summary for
+	 * @return summary for given class, or null if it does not exists
+	 * @see <a href="http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html#writingdoccomments">Writing doc comments</a>
+	 */
+	public static String getClassSummary(Class<?> klass) {
+		URL resource =
+				Thread.currentThread().getContextClassLoader().getResource(JAVADOC_PREFIX + klass.getCanonicalName());
+		if (resource == null) {
+			return null;
+		}
+		try {
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(),
+					Charsets.UTF_8))) {
+				StringBuilder builder = new StringBuilder();
+				String line = reader.readLine();
+				while (line != null) {
+					int dotIndex = line.indexOf('.');
+					if (dotIndex == -1) {
+						builder.append(line);
+					} else {
+						builder.append(line.subSequence(0, dotIndex));
+						return builder.toString().trim();
+					}
+					line = reader.readLine();
+				}
+				return builder.toString().trim();
+			} catch (FileNotFoundException e) {
+				// catch this just in case some compiler actually throws that
+				return null;
+			}
+		} catch (IOException e) {
+			throw new RuntimeException("Evo Class Index: Cannot read Javadoc index", e);
+		}
+	}
+
 	private static Iterable<Class<?>> readIndexFile(String resourceFile) {
 		Set<Class<?>> classes = new HashSet<>();
 
@@ -151,10 +196,22 @@ public class ClassIndex {
 
 			while (resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
-				BufferedReader reader;
-				try {
-					reader = new BufferedReader(new InputStreamReader(resource.openStream(),
-								Charsets.UTF_8));
+				try(BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(),
+								Charsets.UTF_8))) {
+
+					String line = reader.readLine();
+					while (line != null) {
+						Class<?> klass;
+						try {
+							klass = Thread.currentThread().getContextClassLoader().loadClass(line);
+						} catch (ClassNotFoundException e) {
+							line = reader.readLine();
+							continue;
+						}
+						classes.add(klass);
+
+						line = reader.readLine();
+					}
 				} catch (FileNotFoundException e) {
 					// When executed under Tomcat started from Eclipse with "Serve modules without
 					// publishing" option turned on, getResources() method above returns the same
@@ -163,22 +220,6 @@ public class ClassIndex {
 					// See: https://github.com/atteo/evo-classindex/issues/5
 					continue;
 				}
-
-				String line = reader.readLine();
-				while (line != null) {
-					Class<?> klass;
-					try {
-						klass = Thread.currentThread().getContextClassLoader().loadClass(line);
-					} catch (ClassNotFoundException e) {
-						line = reader.readLine();
-						continue;
-					}
-					classes.add(klass);
-
-					line = reader.readLine();
-				}
-
-				reader.close();
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Evo Class Index: Cannot read class index", e);

@@ -35,4 +35,12 @@ import org.atteo.evo.classindex.processor.ClassIndexProcessor;
 @Documented
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface IndexAnnotated {
+	/**
+	 * Specifies whether to store Javadoc for runtime retrieval.
+	 *
+	 * <p>
+	 * You can retrieve the stored Javadoc summary using {@link ClassIndex#getSummary(Class)}.
+	 * </p>
+	 */
+	boolean storeJavadoc() default false;
 }

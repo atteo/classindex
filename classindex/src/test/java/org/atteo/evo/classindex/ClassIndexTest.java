@@ -79,4 +79,14 @@ public class ClassIndexTest {
 		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(Documented.class);
 		assertEquals(0, Iterables.size(annotated));
 	}
+
+	@Test
+	public void shouldNotStoreSummaryByDefault() {
+		assertEquals(null, ClassIndex.getClassSummary(FirstService.class));
+	}
+
+	@Test
+	public void shouldStoreSummary() {
+		assertEquals("First component", ClassIndex.getClassSummary(FirstComponent.class));
+	}
 }

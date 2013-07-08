@@ -13,7 +13,7 @@
  */
 package org.atteo.evo.classindex;
 
-@IndexAnnotated
+@IndexAnnotated(storeJavadoc = true)
 public @interface Component {
 
 }

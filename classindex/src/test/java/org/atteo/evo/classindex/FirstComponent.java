@@ -16,6 +16,9 @@ package org.atteo.evo.classindex;
 import org.atteo.evo.classindex.processor.Important;
 import org.atteo.evo.classindex.processor.Plugin;
 
+/**
+ * First component.
+ */
 @Component
 @Important
 public class FirstComponent implements Plugin {

@@ -35,6 +35,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
@@ -62,6 +63,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 	private Types types;
 	private Filer filer;
+	private Elements elementUtils;
 
 	public ClassIndexProcessor() {
 		indexedAnnotations = Collections.emptySet();
@@ -83,21 +85,21 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		}
 	}
 
-	public void indexAnnotations(Class<?>... classes) {
+	protected final void indexAnnotations(Class<?>... classes) {
 		for (Class<?> klass : classes) {
 			indexedAnnotations.add(klass.getCanonicalName());
 		}
 		annotationDriven = false;
 	}
 
-	public void indexSubclasses(Class<?>... classes) {
+	protected final void indexSubclasses(Class<?>... classes) {
 		for (Class<?> klass : classes) {
 			indexedSuperclasses.add(klass.getCanonicalName());
 		}
 		annotationDriven = false;
 	}
 
-	public void indexPackages(String... packages) {
+	protected final void indexPackages(String... packages) {
 		Collections.addAll(indexedPackages, packages);
 		annotationDriven = false;
 	}
@@ -117,6 +119,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		super.init(processingEnv);
 		types = processingEnv.getTypeUtils();
 		filer = processingEnv.getFiler();
+		elementUtils = processingEnv.getElementUtils();
 	}
 
 	@Override
@@ -132,14 +135,10 @@ public class ClassIndexProcessor extends AbstractProcessor {
 				for (AnnotationMirror mirror : element.getAnnotationMirrors()) {
 					TypeElement annotationElement = (TypeElement) mirror.getAnnotationType()
 							.asElement();
-
-					if (indexedAnnotations.contains(annotationElement.getQualifiedName().toString())
-							|| (annotationDriven && annotationElement.getAnnotation(IndexAnnotated.class) != null)) {
-						annotatedMap.put(annotationElement, typeElement);
-					}
+					storeAnnotation(annotationElement, typeElement);
 				}
 
-				indexSupertypes(typeElement, typeElement, annotatedMap);
+				indexSupertypes(typeElement, typeElement);
 
 				// root elements are enclosed by packages
 				PackageElement packageElement = (PackageElement) element.getEnclosingElement();
@@ -215,12 +214,18 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		}
 	}
 
+	private void writeFile(String content, String resourceName) throws IOException {
+		FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceName);
+		try (Writer writer = file.openWriter()) {
+			writer.write(content);
+		}
+	}
+
 	/**
 	 * Index super types for {@link IndexSubclasses} and any {@link IndexAnnotated}
 	 * additionally accompanied by {@link Inherited}.
 	 */
-	private void indexSupertypes(TypeElement rootElement, TypeElement element,
-			Multimap<TypeElement, TypeElement> annotatedMap) {
+	private void indexSupertypes(TypeElement rootElement, TypeElement element) throws IOException {
 
 		for (TypeMirror mirror : types.directSupertypes(element.asType())) {
 			if (mirror.getKind() != TypeKind.DECLARED) {
@@ -237,14 +242,33 @@ public class ClassIndexProcessor extends AbstractProcessor {
 			for (AnnotationMirror annotationMirror : superTypeElement.getAnnotationMirrors()) {
 				TypeElement annotationElement = (TypeElement) annotationMirror.getAnnotationType()
 						.asElement();
-				if ((indexedAnnotations.contains(annotationElement.getQualifiedName().toString())
-						|| (annotationDriven && annotationElement.getAnnotation(IndexAnnotated.class) != null))
-						&& annotationElement.getAnnotation(Inherited.class) != null) {
-					annotatedMap.put(annotationElement, rootElement);
+
+				if (annotationElement.getAnnotation(Inherited.class) != null) {
+					storeAnnotation(annotationElement, rootElement);
 				}
 			}
 
-			indexSupertypes(rootElement, superTypeElement, annotatedMap);
+			indexSupertypes(rootElement, superTypeElement);
 		}
+	}
+
+	private void storeAnnotation(TypeElement annotationElement, TypeElement rootElement) throws IOException {
+		if (indexedAnnotations.contains(annotationElement.getQualifiedName().toString())) {
+			annotatedMap.put(annotationElement, rootElement);
+		} else if (annotationDriven) {
+			IndexAnnotated indexAnnotated = annotationElement.getAnnotation(IndexAnnotated.class);
+			if (indexAnnotated != null) {
+				annotatedMap.put(annotationElement, rootElement);
+				storeJavadoc(rootElement);
+			}
+		}
+	}
+
+	private void storeJavadoc(TypeElement element) throws IOException {
+		String docComment = elementUtils.getDocComment(element);
+		if (docComment == null) {
+			return;
+		}
+		writeFile(docComment, ClassIndex.JAVADOC_PREFIX + element.getQualifiedName().toString());
 	}
 }
