@@ -9,7 +9,7 @@ Changes
 
 Version 2.0
 
-- You can now use ClassIndex.getClassSummary() to retrieve first sentence of the Javadoc. For this to work specify storeJavadoc=true attribute when using IndexAnnotated or IndexSubclasses
+- You can now use [ClassIndex.getClassSummary()](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29) to retrieve first sentence of the Javadoc. For this to work specify storeJavadoc=true attribute when using IndexAnnotated or IndexSubclasses
 - Requires Java 1.7
 
 Version 1.4
@@ -61,7 +61,7 @@ For classes inside given package the index file is named "jaxb.index", it is loc
 
 Javadoc storage
 ===============
-From version 2.0 [@IndexAnnotated](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/IndexAnnotated.html) and [@IndexSubclasses](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/IndexSubclasses.html) allow to specify storeJavadoc attribute. When set to true Javadoc comment for the indexed classes will be stored. You can retrieve first sentence of the Javadoc using [ClassIndex.getClassSummary()](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html#getClassSummary).
+From version 2.0 [@IndexAnnotated](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/IndexAnnotated.html) and [@IndexSubclasses](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/IndexSubclasses.html) allow to specify storeJavadoc attribute. When set to true Javadoc comment for the indexed classes will be stored. You can retrieve first sentence of the Javadoc using [ClassIndex.getClassSummary()](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29).
 
 ```java
 @IndexAnnotated(storeJavadoc = true)
