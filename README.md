@@ -1,11 +1,16 @@
 About
 =====
-Evo Class Index is much quicker alternative to every run-time annotation scanning library like Reflections or Scannotations.
+Evo Class Index is a much quicker alternative to every run-time annotation scanning library like Reflections or Scannotations.
 
 Evo Class Index is an annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package. Java 6 will automatically [discover](http://www.jcp.org/en/jsr/detail?id=269) the processor from the classpath.
 
 Changes
 =======
+
+Version 2.0
+
+- You can now use ClassIndex.getClassSummary() to retrieve first sentence of the Javadoc. For this to work specify storeJavadoc=true attribute when using IndexAnnotated or IndexSubclasses
+- Requires Java 1.7
 
 Version 1.4
 
@@ -26,7 +31,7 @@ Version 1.1
 - Fix incremental compilation (#1)
 
 
-Usage
+Basic usage
 =====
 There are two annotations which trigger the indexing:
 
@@ -54,11 +59,38 @@ For subclasses of the given class the index file name and format is compatible w
 
 For classes inside given package the index file is named "jaxb.index", it is located inside the package folder and it's format is compatible with what [JAXBContext.newInstance(String)](http://docs.oracle.com/javase/7/docs/api/javax/xml/bind/JAXBContext.html#newInstance(java.lang.String)) expects.
 
+Javadoc storage
+===============
+From version 2.0 [@IndexAnnotated](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/IndexAnnotated.html) and [@IndexSubclasses](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/IndexSubclasses.html) allow to specify storeJavadoc attribute. When set to true Javadoc comment for the indexed classes will be stored. You can retrieve first sentence of the Javadoc using [ClassIndex.getClassSummary()](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html#getClassSummary).
+
+```java
+@IndexAnnotated(storeJavadoc = true)
+public @interface Entity {
+}
+ 
+/**
+ * This is car.
+ * Detailed car description follows.
+ */
+@Entity
+public class Car {
+}
+ 
+...
+ 
+assertEquals("This is car", ClassIndex.getClassSummary(Car.class));
+```
+
 Eclipse
 =======
 Eclipse uses its own Java compiler which is not strictly standard compliant and requires extra configuration.
 In Java Compiler -> Annotation Processing -> Factory Path you need to add both evo-classindex and Guava jar files.
 See the [screenshot](https://github.com/atteo/evo-classindex/issues/5#issuecomment-15365420).
+
+License
+=======
+
+Evo Inflector is available under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 Download
 ========
@@ -69,7 +101,7 @@ You can download the library from [here](http://search.maven.org/remotecontent?f
 <dependency>
     <groupId>org.atteo</groupId>
     <artifactId>evo-classindex</artifactId>
-    <version>1.4</version>
+    <version>2.0</version>
 </dependency>
 ```
 
