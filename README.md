@@ -95,7 +95,7 @@ Evo Inflector is available under [Apache License 2.0](https://www.apache.org/lic
 Download
 ========
 
-You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/evo-classindex/1.4/evo-classindex-1.4.jar) or use the following Maven dependency:
+You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/evo-classindex/2.0/evo-classindex-2.0.jar) or use the following Maven dependency:
 
 ```xml
 <dependency>
