@@ -15,8 +15,8 @@ package org.atteo.evo.classindex.processor;
 
 public class ImportantClassIndexProcessor extends ClassIndexProcessor {
 	public ImportantClassIndexProcessor() {
-		super(Important.class);
 		indexSubclasses(Plugin.class);
 		indexPackages("org.atteo.evo.classindex.second");
+		indexAnnotations(Important.class);
 	}
 }

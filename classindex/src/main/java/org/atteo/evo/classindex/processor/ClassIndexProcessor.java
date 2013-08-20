@@ -57,7 +57,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 	private Multimap<PackageElement, TypeElement> packageMap = HashMultimap.create();
 
 	private boolean annotationDriven = true;
-	private Set<String> indexedAnnotations;
+	private Set<String> indexedAnnotations = new HashSet<>();
 	private Set<String> indexedSuperclasses = new HashSet<>();
 	private Set<String> indexedPackages = new HashSet<>();
 	private Set<TypeElement> javadocAlreadyStored = new HashSet<>();
@@ -67,7 +67,6 @@ public class ClassIndexProcessor extends AbstractProcessor {
 	private Elements elementUtils;
 
 	public ClassIndexProcessor() {
-		indexedAnnotations = Collections.emptySet();
 	}
 
 	/**
@@ -76,7 +75,6 @@ public class ClassIndexProcessor extends AbstractProcessor {
 	 * @param classes list of classes which the processor will be indexing
 	 */
 	protected ClassIndexProcessor(Class<?>... classes) {
-		indexedAnnotations = new HashSet<>();
 		if (classes.length == 0) {
 			return;
 		}
@@ -86,6 +84,9 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		}
 	}
 
+	/**
+	 * Adds given annotations for indexing.
+	 */
 	protected final void indexAnnotations(Class<?>... classes) {
 		for (Class<?> klass : classes) {
 			indexedAnnotations.add(klass.getCanonicalName());
@@ -93,6 +94,9 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		annotationDriven = false;
 	}
 
+	/**
+	 * Adds given classes for subclass indexing.
+	 */
 	protected final void indexSubclasses(Class<?>... classes) {
 		for (Class<?> klass : classes) {
 			indexedSuperclasses.add(klass.getCanonicalName());
@@ -100,6 +104,9 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		annotationDriven = false;
 	}
 
+	/**
+	 * Adds given package for indexing.
+	 */
 	protected final void indexPackages(String... packages) {
 		Collections.addAll(indexedPackages, packages);
 		annotationDriven = false;
