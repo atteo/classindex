@@ -7,6 +7,10 @@ Evo Class Index is an annotation processor which at compile-time generates an in
 Changes
 =======
 
+Version 2.1
+
+- Fix: custom processor with indexAnnotation() call resulted in javac throwing Error
+
 Version 2.0
 
 - You can now use [ClassIndex.getClassSummary()](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29) to retrieve first sentence of the Javadoc. For this to work specify storeJavadoc=true attribute when using IndexAnnotated or IndexSubclasses
@@ -32,7 +36,7 @@ Version 1.1
 
 
 Basic usage
-=====
+===========
 There are two annotations which trigger the indexing:
 
 * [@IndexSubclasses](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/IndexSubclasses.html) when placed on interface makes an index of all classes implementing the interface, when placed on class makes an index of its subclasses and finally when placed in package-info.java it creates an index of all classes in that package.
