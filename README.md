@@ -7,6 +7,9 @@ Evo Class Index is an annotation processor which at compile-time generates an in
 Changes
 =======
 
+Version 2.2
+- Fix: jaxb.index was in incorrect format
+
 Version 2.1
 
 - Fix: custom processor with indexAnnotation() call resulted in javac throwing Error

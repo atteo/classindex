@@ -166,7 +166,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 						+ element.getQualifiedName().toString());
 			}
 			for (PackageElement element : packageMap.keySet()) {
-				writeIndexFile(packageMap.get(element), element.getQualifiedName().toString()
+				writeSimpleNameIndexFile(packageMap.get(element), element.getQualifiedName().toString()
 						.replace(".", "/")
 						+ "/" + ClassIndex.PACKAGE_INDEX_NAME);
 			}
@@ -201,6 +201,16 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		}
 	}
 
+	private void writeIndexFile(Set<String> entries, String resourceName) throws IOException {
+		FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceName);
+		try (Writer writer = file.openWriter()) {
+			for (String entry : entries) {
+				writer.write(entry);
+				writer.write("\n");
+			}
+		}
+	}
+
 	private void writeIndexFile(Iterable<TypeElement> elementList, String resourceName)
 			throws IOException {
 		Set<String> entries = new HashSet<>();
@@ -209,14 +219,18 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		}
 
 		readOldIndexFile(entries, resourceName);
+		writeIndexFile(entries, resourceName);
+	}
 
-		FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceName);
-		try (Writer writer = file.openWriter()) {
-			for (String entry : entries) {
-				writer.write(entry);
-				writer.write("\n");
-			}
+	private void writeSimpleNameIndexFile(Iterable<TypeElement> elementList, String resourceName)
+			throws IOException {
+		Set<String> entries = new HashSet<>();
+		for (TypeElement element : elementList) {
+			entries.add(element.getSimpleName().toString());
 		}
+
+		readOldIndexFile(entries, resourceName);
+		writeIndexFile(entries, resourceName);
 	}
 
 	private void writeFile(String content, String resourceName) throws IOException {

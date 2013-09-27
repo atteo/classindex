@@ -13,7 +13,11 @@
  */
 package org.atteo.evo.classindex;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.annotation.Documented;
+import java.net.URL;
 import java.util.ServiceLoader;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,6 +26,9 @@ import org.atteo.evo.classindex.processor.Plugin;
 import org.atteo.evo.classindex.second.ExtraPlugin;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
 
 public class ClassIndexTest {
 	@Test
@@ -54,8 +61,33 @@ public class ClassIndexTest {
 		// when
 		Iterable<Class<?>> packageSubclasses = ClassIndex.getPackageClasses(
 				ClassIndexTest.class.getPackage().getName());
+
 		// then
 		assertThat(packageSubclasses).contains(FirstComponent.class, Component.class);
+	}
+
+	@Test
+	public void shouldCreateConformingJaxbIndex() throws IOException {
+		// when
+		String resourceName = ClassIndexTest.class.getPackage().getName().replace('.', '/')
+				+ '/' + ClassIndex.PACKAGE_INDEX_NAME;
+		URL resource = Thread.currentThread().getContextClassLoader().getResource(resourceName);
+		InputStream stream = resource.openStream();
+		String content = CharStreams.toString(new InputStreamReader(stream, Charsets.UTF_8));
+
+		// then
+		assertThat(content).contains("\nFirstComponent\n");
+		assertThat(content).contains("\nComponent\n");
+	}
+
+	// https://github.com/atteo/evo-classindex/issues/8
+	@Test
+	public void shouldReadJaxbIndexCreatedByOlderVersions() {
+		// when
+		Iterable<Class<?>> packageSubclasses = ClassIndex.getPackageClasses(ExtraPlugin.class.getPackage().getName());
+
+		// then
+		assertThat(packageSubclasses).contains(ExtraPlugin.class);
 	}
 
 	@Test

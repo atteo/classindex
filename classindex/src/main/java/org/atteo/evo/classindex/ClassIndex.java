@@ -99,7 +99,9 @@ public class ClassIndex {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Iterable<Class<? extends T>> getSubclasses(Class<T> superClass) {
-		Iterable<Class<?>> classes = readIndexFile(SUBCLASS_INDEX_PREFIX + superClass.getCanonicalName());
+		Iterable<String> entries = readIndexFile(SUBCLASS_INDEX_PREFIX + superClass.getCanonicalName());
+		Set<Class<?>> classes = new HashSet<>();
+		findClasses(classes, entries);
 		List<Class<? extends T>> subclasses = new ArrayList<>();
 
 		for (Class<?> klass : classes) {
@@ -125,7 +127,12 @@ public class ClassIndex {
 	 * @return list of classes from package
 	 */
 	public static Iterable<Class<?>> getPackageClasses(String packageName) {
-		return readIndexFile(packageName.replace(".", "/") + "/" + PACKAGE_INDEX_NAME);
+		Iterable<String> entries = readIndexFile(packageName.replace(".", "/") + "/" + PACKAGE_INDEX_NAME);
+
+		Set<Class<?>> classes = new HashSet<>();
+		findClassesInPackage(packageName, classes, entries);
+		findClasses(classes, entries);
+		return classes;
 	}
 
 	/**
@@ -140,7 +147,10 @@ public class ClassIndex {
 	 * @return list of annotated classes
 	 */
 	public static Iterable<Class<?>> getAnnotated(Class<? extends Annotation> annotation) {
-		return readIndexFile(ANNOTATED_INDEX_PREFIX + annotation.getCanonicalName());
+		Iterable<String> entries = readIndexFile(ANNOTATED_INDEX_PREFIX + annotation.getCanonicalName());
+		Set<Class<?>> classes = new HashSet<>();
+		findClasses(classes, entries);
+		return classes;
 	}
 
 	/**
@@ -187,12 +197,11 @@ public class ClassIndex {
 		}
 	}
 
-	private static Iterable<Class<?>> readIndexFile(String resourceFile) {
-		Set<Class<?>> classes = new HashSet<>();
+	private static Iterable<String> readIndexFile(String resourceFile) {
+		Set<String> entries = new HashSet<>();
 
 		try {
-			Enumeration<URL> resources = Thread.currentThread().getContextClassLoader()
-					.getResources(resourceFile);
+			Enumeration<URL> resources = Thread.currentThread().getContextClassLoader() .getResources(resourceFile);
 
 			while (resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
@@ -201,15 +210,7 @@ public class ClassIndex {
 
 					String line = reader.readLine();
 					while (line != null) {
-						Class<?> klass;
-						try {
-							klass = Thread.currentThread().getContextClassLoader().loadClass(line);
-						} catch (ClassNotFoundException e) {
-							line = reader.readLine();
-							continue;
-						}
-						classes.add(klass);
-
+						entries.add(line);
 						line = reader.readLine();
 					}
 				} catch (FileNotFoundException e) {
@@ -218,12 +219,40 @@ public class ClassIndex {
 					// resource two times: first with incorrect path and second time with correct one.
 					// So ignore the one which does not exist.
 					// See: https://github.com/atteo/evo-classindex/issues/5
-					continue;
 				}
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Evo Class Index: Cannot read class index", e);
 		}
-		return classes;
+		return entries;
 	}
+
+	private static void findClasses(Set<Class<?>> classes, Iterable<String> entries) {
+		for (String entry : entries) {
+			Class<?> klass;
+			try {
+				klass = Thread.currentThread().getContextClassLoader().loadClass(entry);
+			} catch (ClassNotFoundException e) {
+				continue;
+			}
+			classes.add(klass);
+		}
+	}
+
+	private static void findClassesInPackage(String packageName, Set<Class<?>> classes, Iterable<String> entries) {
+		for (String entry : entries) {
+			if (entry.contains(".")) {
+				continue;
+			}
+			Class<?> klass;
+			try {
+				klass = Thread.currentThread().getContextClassLoader().loadClass(packageName + "." + entry);
+			} catch (ClassNotFoundException e) {
+				continue;
+			}
+			classes.add(klass);
+		}
+	}
+
+
 }
