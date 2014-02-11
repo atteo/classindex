@@ -27,20 +27,18 @@ import java.util.Set;
 
 import org.atteo.evo.classindex.processor.ClassIndexProcessor;
 
-import com.google.common.base.Charsets;
-
 /**
  * Access to the compile-time generated index of classes.
- *
+ * <p/>
  * <p>
  * Use &#064;{@link IndexAnnotated} and &#064;{@link IndexSubclasses} annotations to force the classes to be indexed.
  * </p>
- *
+ * <p/>
  * <p>
  * Keep in mind that the class is indexed only when it is compiled with
  * evo-classindex.jar file in classpath.
  * </p>
- *
+ * <p/>
  * <p>
  * Also to preserve class-index data when creating shaded jar you should use the following
  * Maven configuration:
@@ -88,7 +86,7 @@ public class ClassIndex {
 
 	/**
 	 * Retrieves a list of subclasses of the given class.
-	 *
+	 * <p/>
 	 * <p>
 	 * The class must be annotated with {@link IndexSubclasses} for it's subclasses to be indexed
 	 * at compile-time by {@link ClassIndexProcessor}.
@@ -117,7 +115,7 @@ public class ClassIndex {
 
 	/**
 	 * Retrieves a list of classes from given package.
-	 *
+	 * <p/>
 	 * <p>
 	 * The package must be annotated with {@link IndexSubclasses} for the classes inside
 	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
@@ -137,7 +135,7 @@ public class ClassIndex {
 
 	/**
 	 * Retrieves a list of classes annotated by given annotation.
-	 *
+	 * <p/>
 	 * <p>
 	 * The annotation must be annotated with {@link IndexAnnotated} for annotated classes
 	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
@@ -162,6 +160,7 @@ public class ClassIndex {
 	 * You need to use {@link IndexSubclasses} or {@link IndexAnnotated} with {@link IndexAnnotated#storeJavadoc()}
 	 * set to true.
 	 * </p>
+	 *
 	 * @param klass class to retrieve summary for
 	 * @return summary for given class, or null if it does not exists
 	 * @see <a href="http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html#writingdoccomments">Writing doc comments</a>
@@ -173,8 +172,7 @@ public class ClassIndex {
 			return null;
 		}
 		try {
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(),
-					Charsets.UTF_8))) {
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(), "UTF-8"))) {
 				StringBuilder builder = new StringBuilder();
 				String line = reader.readLine();
 				while (line != null) {
@@ -201,12 +199,11 @@ public class ClassIndex {
 		Set<String> entries = new HashSet<>();
 
 		try {
-			Enumeration<URL> resources = Thread.currentThread().getContextClassLoader() .getResources(resourceFile);
+			Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(resourceFile);
 
 			while (resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
-				try(BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(),
-								Charsets.UTF_8))) {
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(), "UTF-8"))) {
 
 					String line = reader.readLine();
 					while (line != null) {

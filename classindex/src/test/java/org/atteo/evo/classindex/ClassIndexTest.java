@@ -25,6 +25,8 @@ import org.atteo.evo.classindex.processor.Important;
 import org.atteo.evo.classindex.processor.Plugin;
 import org.atteo.evo.classindex.second.ExtraPlugin;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 
 import com.google.common.base.Charsets;
@@ -37,7 +39,7 @@ public class ClassIndexTest {
 		// when
 		Iterable<Class<? extends Service>> services = ClassIndex.getSubclasses(Service.class);
 		// then
-		assertThat(services).containsOnly(FirstService.class, SecondService.class);
+		assertThat(services).containsOnly(FirstService.class, SecondService.class, InnerClasses.InnerService.class);
 	}
 
 	@Test
@@ -45,7 +47,7 @@ public class ClassIndexTest {
 		// when
 		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(Component.class);
 		// then
-		assertThat(annotated).containsOnly(FirstComponent.class, SecondComponent.class);
+		assertThat(annotated).containsOnly(FirstComponent.class, SecondComponent.class, InnerClasses.InnerComponent.class);
 	}
 
 	@Test
@@ -53,7 +55,7 @@ public class ClassIndexTest {
 		// when
 		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(InheritedAnnotation.class);
 		// then
-		assertThat(annotated).containsOnly(Service.class, FirstService.class, SecondService.class);
+		assertThat(annotated).containsOnly(Service.class, FirstService.class, SecondService.class, InnerClasses.InnerService.class);
 	}
 
 	@Test
@@ -72,12 +74,14 @@ public class ClassIndexTest {
 		String resourceName = ClassIndexTest.class.getPackage().getName().replace('.', '/')
 				+ '/' + ClassIndex.PACKAGE_INDEX_NAME;
 		URL resource = Thread.currentThread().getContextClassLoader().getResource(resourceName);
+		assertNotNull(resource);
 		InputStream stream = resource.openStream();
 		String content = CharStreams.toString(new InputStreamReader(stream, Charsets.UTF_8));
 
 		// then
 		assertThat(content).contains("\nFirstComponent\n");
 		assertThat(content).contains("\nComponent\n");
+		assertThat(content).contains("\nTomcatFromEclipseTest$WeirdClassLoader\n");
 	}
 
 	// https://github.com/atteo/evo-classindex/issues/8
@@ -95,7 +99,7 @@ public class ClassIndexTest {
 		// when
 		ServiceLoader<Service> loader = ServiceLoader.load(Service.class);
 		// then
-		assertThat(loader).hasSize(2);
+		assertThat(loader).hasSize(3);
 	}
 
 	@Test
