@@ -14,7 +14,9 @@
 package org.atteo.evo.classindex.processor;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -72,6 +74,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 	/**
 	 * Used when creating subclasses of the processor which will index some annotations
 	 * which cannot be itself annotated with {@link IndexAnnotated} or {@link IndexSubclasses}.
+	 *
 	 * @param classes list of classes which the processor will be indexing
 	 */
 	protected ClassIndexProcessor(Class<?>... classes) {
@@ -178,18 +181,26 @@ public class ClassIndexProcessor extends AbstractProcessor {
 	}
 
 	private void readOldIndexFile(Set<String> entries, String resourceName) throws IOException {
-		BufferedReader reader = null;
+		Reader reader = null;
 		try {
-			FileObject resource = filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourceName);
-			Reader resourceReader = resource.openReader(true);
-			reader = new BufferedReader(resourceReader);
-
-			String line = reader.readLine();
-			while (line != null) {
-				entries.add(line);
-				line = reader.readLine();
-			}
+			final FileObject resource = filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourceName);
+			reader = resource.openReader(true);
+			readOldIndexFile(entries, reader);
 		} catch (FileNotFoundException e) {
+			/**
+			 * Ugly hack for Intellij IDEA incremental compilation.
+			 * The problem is that it throws on the files from the existence of FileNotFoundException, if they were not created during the
+			 * current session of compilation.
+			 */
+			final String realPath = e.getMessage();
+			if (new File(realPath).exists()) {
+				final Reader fileReader = new FileReader(realPath);
+				try {
+					readOldIndexFile(entries, fileReader);
+				} finally {
+					fileReader.close();
+				}
+			}
 		} catch (IOException e) {
 			// Thrown by Eclipse JDT when not found
 		} catch (UnsupportedOperationException e) {
@@ -197,6 +208,16 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		} finally {
 			if (reader != null) {
 				reader.close();
+			}
+		}
+	}
+
+	private static void readOldIndexFile(Set<String> entries, Reader reader) throws IOException {
+		try (BufferedReader bufferedReader = new BufferedReader(reader)) {
+			String line = bufferedReader.readLine();
+			while (line != null) {
+				entries.add(line);
+				line = bufferedReader.readLine();
 			}
 		}
 	}
