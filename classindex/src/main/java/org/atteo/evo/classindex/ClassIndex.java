@@ -98,17 +98,32 @@ public class ClassIndex {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Iterable<Class<? extends T>> getSubclasses(Class<T> superClass) {
-		Iterable<String> entries = readIndexFile(SUBCLASS_INDEX_PREFIX + superClass.getCanonicalName());
+		return getSubclasses(Thread.currentThread().getContextClassLoader(), superClass);
+	}
+
+	/**
+	 * Retrieves a list of subclasses of the given class.
+	 * <p/>
+	 * <p>
+	 * The class must be annotated with {@link IndexSubclasses} for it's subclasses to be indexed
+	 * at compile-time by {@link ClassIndexProcessor}.
+	 * </p>
+	 *
+	 * @param classLoader classloader for loading classes
+	 * @param superClass  class to find subclasses for
+	 * @return list of subclasses
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Iterable<Class<? extends T>> getSubclasses(ClassLoader classLoader, Class<T> superClass) {
+		Iterable<String> entries = readIndexFile(classLoader, SUBCLASS_INDEX_PREFIX + superClass.getCanonicalName());
 		Set<Class<?>> classes = new HashSet<>();
-		findClasses(classes, entries);
+		findClasses(classLoader, classes, entries, null);
 		List<Class<? extends T>> subclasses = new ArrayList<>();
 
 		for (Class<?> klass : classes) {
-			if (!superClass.isAssignableFrom(klass)) {
-				throw new RuntimeException("Class '" + klass + "' is not a subclass of '"
-						+ superClass.getCanonicalName() + "'");
+			if (superClass.isAssignableFrom(klass)) {
+				subclasses.add((Class<? extends T>) klass);
 			}
-			subclasses.add((Class<? extends T>) klass);
 		}
 
 		return subclasses;
@@ -126,11 +141,27 @@ public class ClassIndex {
 	 * @return list of classes from package
 	 */
 	public static Iterable<Class<?>> getPackageClasses(String packageName) {
-		Iterable<String> entries = readIndexFile(packageName.replace(".", "/") + "/" + PACKAGE_INDEX_NAME);
+		return getPackageClasses(Thread.currentThread().getContextClassLoader(), packageName);
+	}
+
+	/**
+	 * Retrieves a list of classes from given package.
+	 * <p/>
+	 * <p>
+	 * The package must be annotated with {@link IndexSubclasses} for the classes inside
+	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * </p>
+	 *
+	 * @param classLoader classloader for loading classes
+	 * @param packageName name of the package to search classes for
+	 * @return list of classes from package
+	 */
+	public static Iterable<Class<?>> getPackageClasses(ClassLoader classLoader, String packageName) {
+		Iterable<String> entries = readIndexFile(classLoader, packageName.replace(".", "/") + "/" + PACKAGE_INDEX_NAME);
 
 		Set<Class<?>> classes = new HashSet<>();
-		findClassesInPackage(packageName, classes, entries);
-		findClasses(classes, entries);
+		findClassesInPackage(classLoader, packageName, classes, entries);
+		findClasses(classLoader, classes, entries, null);
 		return classes;
 	}
 
@@ -146,9 +177,25 @@ public class ClassIndex {
 	 * @return list of annotated classes
 	 */
 	public static Iterable<Class<?>> getAnnotated(Class<? extends Annotation> annotation) {
-		Iterable<String> entries = readIndexFile(ANNOTATED_INDEX_PREFIX + annotation.getCanonicalName());
+		return getAnnotated(Thread.currentThread().getContextClassLoader(), annotation);
+	}
+
+	/**
+	 * Retrieves a list of classes annotated by given annotation.
+	 * <p/>
+	 * <p>
+	 * The annotation must be annotated with {@link IndexAnnotated} for annotated classes
+	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * </p>
+	 *
+	 * @param classLoader classloader for loading classes
+	 * @param annotation  annotation to search class for
+	 * @return list of annotated classes
+	 */
+	public static Iterable<Class<?>> getAnnotated(ClassLoader classLoader, Class<? extends Annotation> annotation) {
+		Iterable<String> entries = readIndexFile(classLoader, ANNOTATED_INDEX_PREFIX + annotation.getCanonicalName());
 		Set<Class<?>> classes = new HashSet<>();
-		findClasses(classes, entries);
+		findClasses(classLoader, classes, entries, annotation);
 		return classes;
 	}
 
@@ -167,8 +214,26 @@ public class ClassIndex {
 	 * @see <a href="http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html#writingdoccomments">Writing doc comments</a>
 	 */
 	public static String getClassSummary(Class<?> klass) {
-		URL resource =
-				Thread.currentThread().getContextClassLoader().getResource(JAVADOC_PREFIX + klass.getCanonicalName());
+		return getClassSummary(Thread.currentThread().getContextClassLoader(), klass);
+	}
+
+	/**
+	 * Returns the Javadoc summary for given class.
+	 * <p>
+	 * Javadoc summary is the first sentence of a Javadoc.
+	 * </p>
+	 * <p>
+	 * You need to use {@link IndexSubclasses} or {@link IndexAnnotated} with {@link IndexAnnotated#storeJavadoc()}
+	 * set to true.
+	 * </p>
+	 *
+	 * @param classLoader classloader for loading classes
+	 * @param klass       class to retrieve summary for
+	 * @return summary for given class, or null if it does not exists
+	 * @see <a href="http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html#writingdoccomments">Writing doc comments</a>
+	 */
+	public static String getClassSummary(ClassLoader classLoader, Class<?> klass) {
+		URL resource = classLoader.getResource(JAVADOC_PREFIX + klass.getCanonicalName());
 		if (resource == null) {
 			return null;
 		}
@@ -196,11 +261,11 @@ public class ClassIndex {
 		}
 	}
 
-	private static Iterable<String> readIndexFile(String resourceFile) {
+	private static Iterable<String> readIndexFile(ClassLoader classLoader, String resourceFile) {
 		Set<String> entries = new HashSet<>();
 
 		try {
-			Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(resourceFile);
+			Enumeration<URL> resources = classLoader.getResources(resourceFile);
 
 			while (resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
@@ -225,26 +290,28 @@ public class ClassIndex {
 		return entries;
 	}
 
-	private static void findClasses(Set<Class<?>> classes, Iterable<String> entries) {
+	private static void findClasses(ClassLoader classLoader, Set<Class<?>> classes, Iterable<String> entries, Class<? extends Annotation> annotation) {
 		for (String entry : entries) {
 			Class<?> klass;
 			try {
-				klass = Thread.currentThread().getContextClassLoader().loadClass(entry);
+				klass = classLoader.loadClass(entry);
 			} catch (ClassNotFoundException e) {
 				continue;
 			}
-			classes.add(klass);
+			if (annotation == null || klass.isAnnotationPresent(annotation)) {
+				classes.add(klass);
+			}
 		}
 	}
 
-	private static void findClassesInPackage(String packageName, Set<Class<?>> classes, Iterable<String> entries) {
+	private static void findClassesInPackage(ClassLoader classLoader, String packageName, Set<Class<?>> classes, Iterable<String> entries) {
 		for (String entry : entries) {
 			if (entry.contains(".")) {
 				continue;
 			}
 			Class<?> klass;
 			try {
-				klass = Thread.currentThread().getContextClassLoader().loadClass(packageName + "." + entry);
+				klass = classLoader.loadClass(packageName + "." + entry);
 			} catch (ClassNotFoundException e) {
 				continue;
 			}
