@@ -20,13 +20,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
@@ -37,8 +42,10 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementScanner6;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
@@ -46,17 +53,13 @@ import org.atteo.evo.classindex.ClassIndex;
 import org.atteo.evo.classindex.IndexAnnotated;
 import org.atteo.evo.classindex.IndexSubclasses;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
-
 /**
  * Generates index files for {@link ClassIndex}.
  */
 public class ClassIndexProcessor extends AbstractProcessor {
-	private Multimap<TypeElement, TypeElement> subclassMap = HashMultimap.create();
-	private Multimap<TypeElement, TypeElement> annotatedMap = HashMultimap.create();
-	private Multimap<PackageElement, TypeElement> packageMap = HashMultimap.create();
+	private Map<TypeElement, Set<String>> subclassMap = new HashMap<>();
+	private Map<TypeElement, Set<String>> annotatedMap = new HashMap<>();
+	private Map<PackageElement, Set<String>> packageMap = new HashMap<>();
 
 	private boolean annotationDriven = true;
 	private Set<String> indexedAnnotations = new HashSet<>();
@@ -67,6 +70,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 	private Types types;
 	private Filer filer;
 	private Elements elementUtils;
+	private Messager messager;
 
 	public ClassIndexProcessor() {
 	}
@@ -122,7 +126,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 	@Override
 	public Set<String> getSupportedAnnotationTypes() {
-		return Sets.newHashSet("*");
+		return Collections.singleton("*");
 	}
 
 	@Override
@@ -131,6 +135,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		types = processingEnv.getTypeUtils();
 		filer = processingEnv.getFiler();
 		elementUtils = processingEnv.getElementUtils();
+		messager = processingEnv.getMessager();
 	}
 
 	@Override
@@ -140,44 +145,53 @@ public class ClassIndexProcessor extends AbstractProcessor {
 				if (!(element instanceof TypeElement)) {
 					continue;
 				}
-
-				TypeElement typeElement = (TypeElement) element;
-
-				for (AnnotationMirror mirror : element.getAnnotationMirrors()) {
-					TypeElement annotationElement = (TypeElement) mirror.getAnnotationType()
-							.asElement();
-					storeAnnotation(annotationElement, typeElement);
-				}
-
-				indexSupertypes(typeElement, typeElement);
-
-				// root elements are enclosed by packages
-				PackageElement packageElement = (PackageElement) element.getEnclosingElement();
-				storeClassFromPackage(packageElement, typeElement);
+				final PackageElement packageElement = getPackage(element);
+				element.accept(new ElementScanner6<Void, Void>() {
+					@Override
+					public Void visitType(TypeElement typeElement, Void o) {
+						try {
+							for (AnnotationMirror mirror : typeElement.getAnnotationMirrors()) {
+								final TypeElement annotationElement = (TypeElement) mirror.getAnnotationType().asElement();
+								storeAnnotation(annotationElement, typeElement);
+							}
+							indexSupertypes(typeElement, typeElement);
+							if (packageElement != null) {
+								storeClassFromPackage(packageElement, typeElement);
+							}
+						} catch (IOException e) {
+							messager.printMessage(Diagnostic.Kind.ERROR, "[ClassIndexProcessor] " + e.getMessage());
+						}
+						return super.visitType(typeElement, o);
+					}
+				}, null);
 			}
 
 			if (!roundEnv.processingOver()) {
 				return false;
 			}
 
-			for (TypeElement element : subclassMap.keySet()) {
-				writeIndexFile(subclassMap.get(element), ClassIndex.SUBCLASS_INDEX_PREFIX
-						+ element.getQualifiedName().toString());
-			}
-			for (TypeElement element : annotatedMap.keySet()) {
-				writeIndexFile(annotatedMap.get(element), ClassIndex.ANNOTATED_INDEX_PREFIX
-						+ element.getQualifiedName().toString());
-			}
-			for (PackageElement element : packageMap.keySet()) {
-				writeSimpleNameIndexFile(packageMap.get(element), element.getQualifiedName().toString()
+			writeIndexFiles(ClassIndex.SUBCLASS_INDEX_PREFIX, subclassMap);
+			writeIndexFiles(ClassIndex.ANNOTATED_INDEX_PREFIX, annotatedMap);
+
+			for (Map.Entry<PackageElement, Set<String>> entry : packageMap.entrySet()) {
+				writeSimpleNameIndexFile(entry.getValue(), entry.getKey().getQualifiedName().toString()
 						.replace(".", "/")
 						+ "/" + ClassIndex.PACKAGE_INDEX_NAME);
 			}
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			messager.printMessage(Diagnostic.Kind.ERROR, "[ClassIndexProcessor] Can't write index file: " + e.getMessage());
+		} catch (Throwable e) {
+			e.printStackTrace();
+			messager.printMessage(Diagnostic.Kind.ERROR, "[ClassIndexProcessor] Internal error: " + e.getMessage());
 		}
 
 		return false;
+	}
+
+	private void writeIndexFiles(String prefix, Map<TypeElement, Set<String>> indexMap) throws IOException {
+		for (Map.Entry<TypeElement, Set<String>> entry : indexMap.entrySet()) {
+			writeSimpleNameIndexFile(entry.getValue(), prefix + entry.getKey().getQualifiedName().toString());
+		}
 	}
 
 	private void readOldIndexFile(Set<String> entries, String resourceName) throws IOException {
@@ -232,26 +246,10 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		}
 	}
 
-	private void writeIndexFile(Iterable<TypeElement> elementList, String resourceName)
+	private void writeSimpleNameIndexFile(Set<String> elementList, String resourceName)
 			throws IOException {
-		Set<String> entries = new HashSet<>();
-		for (TypeElement element : elementList) {
-			entries.add(element.getQualifiedName().toString());
-		}
-
-		readOldIndexFile(entries, resourceName);
-		writeIndexFile(entries, resourceName);
-	}
-
-	private void writeSimpleNameIndexFile(Iterable<TypeElement> elementList, String resourceName)
-			throws IOException {
-		Set<String> entries = new HashSet<>();
-		for (TypeElement element : elementList) {
-			entries.add(element.getSimpleName().toString());
-		}
-
-		readOldIndexFile(entries, resourceName);
-		writeIndexFile(entries, resourceName);
+		readOldIndexFile(elementList, resourceName);
+		writeIndexFile(elementList, resourceName);
 	}
 
 	private void writeFile(String content, String resourceName) throws IOException {
@@ -280,7 +278,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 				TypeElement annotationElement = (TypeElement) annotationMirror.getAnnotationType()
 						.asElement();
 
-				if (annotationElement.getAnnotation(Inherited.class) != null) {
+				if (hasAnnotation(annotationElement, Inherited.class)) {
 					storeAnnotation(annotationElement, rootElement);
 				}
 			}
@@ -289,13 +287,28 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		}
 	}
 
+	private boolean hasAnnotation(TypeElement element, Class<? extends Annotation> inheritedClass) {
+		try {
+			for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
+				if (annotationMirror.getAnnotationType().toString().equals(inheritedClass.getName())) {
+					return true;
+				}
+			}
+		} catch (RuntimeException e) {
+			if (!e.getClass().getName().equals("com.sun.tools.javac.code.Symbol$CompletionFailure")) {
+				messager.printMessage(Diagnostic.Kind.ERROR, "[ClassIndexProcessor] Can't check annotation: " + e.getMessage());
+			}
+		}
+		return false;
+	}
+
 	private void storeAnnotation(TypeElement annotationElement, TypeElement rootElement) throws IOException {
 		if (indexedAnnotations.contains(annotationElement.getQualifiedName().toString())) {
-			annotatedMap.put(annotationElement, rootElement);
+			putElement(annotatedMap, annotationElement, rootElement);
 		} else if (annotationDriven) {
 			IndexAnnotated indexAnnotated = annotationElement.getAnnotation(IndexAnnotated.class);
 			if (indexAnnotated != null) {
-				annotatedMap.put(annotationElement, rootElement);
+				putElement(annotatedMap, annotationElement, rootElement);
 				if (indexAnnotated.storeJavadoc()) {
 					storeJavadoc(rootElement);
 				}
@@ -305,11 +318,11 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 	private void storeSubclass(TypeElement superTypeElement, TypeElement rootElement) throws IOException {
 		if (indexedSuperclasses.contains(superTypeElement.getQualifiedName().toString())) {
-			subclassMap.put(superTypeElement, rootElement);
+			putElement(subclassMap, superTypeElement, rootElement);
 		} else if (annotationDriven) {
 			IndexSubclasses indexSubclasses = superTypeElement.getAnnotation(IndexSubclasses.class);
 			if (indexSubclasses != null) {
-				subclassMap.put(superTypeElement, rootElement);
+				putElement(subclassMap, superTypeElement, rootElement);
 
 				if (indexSubclasses.storeJavadoc()) {
 					storeJavadoc(rootElement);
@@ -318,22 +331,92 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		}
 		if (indexedSuperclasses.contains(superTypeElement.getQualifiedName().toString())
 				|| (annotationDriven && superTypeElement.getAnnotation(IndexSubclasses.class) != null)) {
-			subclassMap.put(superTypeElement, rootElement);
+			putElement(subclassMap, superTypeElement, rootElement);
 		}
 	}
 
 	private void storeClassFromPackage(PackageElement packageElement, TypeElement rootElement) throws IOException {
 		if (indexedPackages.contains(packageElement.getQualifiedName().toString())) {
-			packageMap.put(packageElement, rootElement);
+			putElement(packageMap, packageElement, rootElement);
 		} else if (annotationDriven) {
 			IndexSubclasses indexSubclasses = packageElement.getAnnotation(IndexSubclasses.class);
 			if (indexSubclasses != null) {
-				packageMap.put(packageElement, rootElement);
-				if (indexSubclasses.storeJavadoc()) {
-					storeJavadoc(rootElement);
+				String simpleName = getShortName(rootElement);
+				if (simpleName != null) {
+					putElement(packageMap, packageElement, simpleName);
+					if (indexSubclasses.storeJavadoc()) {
+						storeJavadoc(rootElement);
+					}
 				}
 			}
 		}
+	}
+
+	private <K> void putElement(Map<K, Set<String>> map, K keyElement, TypeElement valueElement) {
+		final String fullName = getFullName(valueElement);
+		if (fullName != null) {
+			putElement(map, keyElement, fullName);
+		}
+	}
+
+	private <K> void putElement(Map<K, Set<String>> map, K keyElement, String valueElement) {
+		Set<String> set = map.get(keyElement);
+		if (set == null) {
+			set = new TreeSet<>();
+			map.put(keyElement, set);
+		}
+		set.add(valueElement);
+	}
+
+	private String getFullName(TypeElement typeElement) {
+		switch (typeElement.getNestingKind()) {
+			case TOP_LEVEL:
+				return typeElement.getQualifiedName().toString();
+			case MEMBER:
+				final Element enclosingElement = typeElement.getEnclosingElement();
+				if (enclosingElement instanceof TypeElement) {
+					final String enclosingName = getFullName(((TypeElement) enclosingElement));
+					if (enclosingName != null) {
+						return enclosingName + '$' + typeElement.getSimpleName().toString();
+					}
+				}
+				return null;
+			case ANONYMOUS:
+			case LOCAL:
+			default:
+				return null;
+		}
+	}
+
+	private String getShortName(TypeElement typeElement) {
+		switch (typeElement.getNestingKind()) {
+			case TOP_LEVEL:
+				return typeElement.getSimpleName().toString();
+			case MEMBER:
+				final Element enclosingElement = typeElement.getEnclosingElement();
+				if (enclosingElement instanceof TypeElement) {
+					final String enclosingName = getShortName(((TypeElement) enclosingElement));
+					if (enclosingName != null) {
+						return enclosingName + '$' + typeElement.getSimpleName().toString();
+					}
+				}
+				return null;
+			case ANONYMOUS:
+			case LOCAL:
+			default:
+				return null;
+		}
+	}
+
+	private PackageElement getPackage(Element typeElement) {
+		Element element = typeElement;
+		while (element != null) {
+			if (element instanceof PackageElement) {
+				return (PackageElement) element;
+			}
+			element = element.getEnclosingElement();
+		}
+		return null;
 	}
 
 	private void storeJavadoc(TypeElement element) throws IOException {
@@ -348,4 +431,6 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		}
 		writeFile(docComment, ClassIndex.JAVADOC_PREFIX + element.getQualifiedName().toString());
 	}
+
+
 }
