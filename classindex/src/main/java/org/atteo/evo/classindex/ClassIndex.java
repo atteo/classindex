@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -172,7 +173,7 @@ public class ClassIndex {
 			return null;
 		}
 		try {
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(), "UTF-8"))) {
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(), StandardCharsets.UTF_8))) {
 				StringBuilder builder = new StringBuilder();
 				String line = reader.readLine();
 				while (line != null) {
@@ -203,7 +204,7 @@ public class ClassIndex {
 
 			while (resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
-				try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(), "UTF-8"))) {
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(), StandardCharsets.UTF_8))) {
 
 					String line = reader.readLine();
 					while (line != null) {
