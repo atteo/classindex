@@ -2,14 +2,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.atteo</groupId>
-		<artifactId>evo-classindex-transformer-test</artifactId>
+		<groupId>org.atteo.classindex</groupId>
+		<artifactId>classindex-transformer-test</artifactId>
 		<version>@project.version@</version>
 	</parent>
-	<groupId>org.atteo</groupId>
-	<artifactId>evo-classindex-transformer-test-first</artifactId>
+	<artifactId>classindex-transformer-test-first</artifactId>
 	<version>@project.version@</version>
-	<name>Evo Class Index Transformer Test First</name>
+	<name>ClassIndex Transformer Test First</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.atteo.classindex</groupId>

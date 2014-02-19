@@ -31,7 +31,7 @@
 						</goals>
 						<configuration>
 							<transformers>
-								<transformer implementation="org.atteo.evo.classindex.ClassIndexTransformer"/>
+								<transformer implementation="org.atteo.classindex.ClassIndexTransformer"/>
 							</transformers>
 						</configuration>
 					</execution>
@@ -59,7 +59,7 @@
 							<arguments>
 								<argument>-cp</argument>
 								<argument>${project.build.directory}/${project.build.finalName}.jar</argument>
-								<argument>org.atteo.evo.classindex.ClassIndexTest</argument>
+								<argument>org.atteo.classindex.ClassIndexTest</argument>
 							</arguments>
 						</configuration>
 					</execution>

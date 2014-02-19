@@ -1,13 +1,21 @@
 About
 =====
-Evo Class Index is a much quicker alternative to every run-time annotation scanning library like Reflections or Scannotations.
+ClassIndex is a much quicker alternative to every run-time annotation scanning library like Reflections or Scannotations.
 
-Evo Class Index is an annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package. Java 6 will automatically [discover](http://www.jcp.org/en/jsr/detail?id=269) the processor from the classpath.
+ClassIndex is an annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package. Java automatically [discovers](http://www.jcp.org/en/jsr/detail?id=269) the processor from the classpath.
 
 Changes
 =======
 
+Version 3.0
+
+- Static inner classes are also indexed
+- Fix: incremental compilation in IntelliJ IDEA
+- You can now specify class loader
+- package name nad groupId has changed to org.atteo.classindex
+
 Version 2.2
+
 - Fix: jaxb.index was in incorrect format
 
 Version 2.1
@@ -16,7 +24,7 @@ Version 2.1
 
 Version 2.0
 
-- You can now use [ClassIndex.getClassSummary()](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29) to retrieve first sentence of the Javadoc. For this to work specify storeJavadoc=true attribute when using IndexAnnotated or IndexSubclasses
+- You can now use [ClassIndex.getClassSummary()](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29) to retrieve first sentence of the Javadoc. For this to work specify storeJavadoc=true attribute when using IndexAnnotated or IndexSubclasses
 - Requires Java 1.7
 
 Version 1.4
@@ -42,9 +50,9 @@ Basic usage
 ===========
 There are two annotations which trigger the indexing:
 
-* [@IndexSubclasses](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/IndexSubclasses.html) when placed on interface makes an index of all classes implementing the interface, when placed on class makes an index of its subclasses and finally when placed in package-info.java it creates an index of all classes in that package.
-* [@IndexAnnotated](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/IndexAnnotated.html) when placed on an annotation makes an index of all classes marked with that annotation.
-To access the index at run-time use static methods of [ClassIndex](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html) class.
+* [@IndexSubclasses](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexSubclasses.html) when placed on interface makes an index of all classes implementing the interface, when placed on class makes an index of its subclasses and finally when placed in package-info.java it creates an index of all classes in that package.
+* [@IndexAnnotated](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexAnnotated.html) when placed on an annotation makes an index of all classes marked with that annotation.
+To access the index at run-time use static methods of [ClassIndex](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/ClassIndex.html) class.
 
 ```java
 @IndexAnnotated
@@ -68,7 +76,7 @@ For classes inside given package the index file is named "jaxb.index", it is loc
 
 Javadoc storage
 ===============
-From version 2.0 [@IndexAnnotated](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/IndexAnnotated.html) and [@IndexSubclasses](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/IndexSubclasses.html) allow to specify storeJavadoc attribute. When set to true Javadoc comment for the indexed classes will be stored. You can retrieve first sentence of the Javadoc using [ClassIndex.getClassSummary()](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29).
+From version 2.0 [@IndexAnnotated](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexAnnotated.html) and [@IndexSubclasses](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexSubclasses.html) allow to specify storeJavadoc attribute. When set to true Javadoc comment for the indexed classes will be stored. You can retrieve first sentence of the Javadoc using [ClassIndex.getClassSummary()](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29).
 
 ```java
 @IndexAnnotated(storeJavadoc = true)
@@ -97,7 +105,7 @@ See the [screenshot](https://github.com/atteo/classindex/issues/5#issuecomment-1
 License
 =======
 
-Evo Inflector is available under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+ClassIndex is available under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 Download
 ========

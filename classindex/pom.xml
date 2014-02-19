@@ -48,7 +48,7 @@
 						<configuration>
 							<proc>none</proc>
 							<testIncludes>
-								<include>org/atteo/evo/classindex/processor/*</include>
+								<include>org/atteo/classindex/processor/*</include>
 							</testIncludes>
 						</configuration>
 					</execution>
@@ -56,7 +56,7 @@
 						<id>default-testCompile</id>
 						<configuration>
 							<testExcludes>
-								<exclude>org/atteo/evo/classindex/SecondService.java</exclude>
+								<exclude>org/atteo/classindex/SecondService.java</exclude>
 							</testExcludes>
 						</configuration>
 					</execution>
@@ -68,7 +68,7 @@
 						</goals>
 						<configuration>
 							<testIncludes>
-								<includes>org/atteo/evo/classindex/SecondService.java</includes>
+								<includes>org/atteo/classindex/SecondService.java</includes>
 							</testIncludes>
 						</configuration>
 					</execution>
@@ -84,7 +84,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<delete file="${project.build.testOutputDirectory}/org/atteo/evo/classindex/DeletedComponent.class" />
+								<delete file="${project.build.testOutputDirectory}/org/atteo/classindex/DeletedComponent.class" />
 							</target>
 						</configuration>
 					</execution>
@@ -107,7 +107,7 @@
 							<rules>
 								<requireFilesExist>
 									<files>
-										<file>${project.build.testOutputDirectory}/org/atteo/evo/classindex/ClassIndexTest.class</file>
+										<file>${project.build.testOutputDirectory}/org/atteo/classindex/ClassIndexTest.class</file>
 									</files>
 									<message>javac returned success, but did not compile any files</message>
 								</requireFilesExist>
