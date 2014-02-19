@@ -208,11 +208,8 @@ public class ClassIndexProcessor extends AbstractProcessor {
 			 */
 			final String realPath = e.getMessage();
 			if (new File(realPath).exists()) {
-				final Reader fileReader = new FileReader(realPath);
-				try {
+				try (Reader fileReader = new FileReader(realPath)) {
 					readOldIndexFile(entries, fileReader);
-				} finally {
-					fileReader.close();
 				}
 			}
 		} catch (IOException e) {

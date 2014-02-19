@@ -15,6 +15,8 @@ package org.atteo.evo.classindex;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.ServiceLoader;
 
@@ -42,13 +44,14 @@ import org.atteo.evo.classindex.processor.ClassIndexProcessor;
  * </p>
  */
 @Documented
-@Target({ ElementType.TYPE, ElementType.PACKAGE })
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.PACKAGE})
 public @interface IndexSubclasses {
 	/**
 	 * Specifies whether to store Javadoc for runtime retrieval.
 	 *
 	 * <p>
-	 * You can retrieve the stored Javadoc summary using {@link ClassIndex#getSummary(Class)}.
+	 * You can retrieve the stored Javadoc summary using {@link ClassIndex#getClassSummary(Class)}.
 	 * </p>
 	 */
 	boolean storeJavadoc() default false;
