@@ -12,8 +12,8 @@
 	<name>Evo Class Index Transformer Test First</name>
 	<dependencies>
 		<dependency>
-			<groupId>org.atteo</groupId>
-			<artifactId>evo-classindex</artifactId>
+			<groupId>org.atteo.classindex</groupId>
+			<artifactId>classindex</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

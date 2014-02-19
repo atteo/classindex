@@ -26,7 +26,6 @@ import org.atteo.evo.classindex.processor.Plugin;
 import org.atteo.evo.classindex.second.ExtraPlugin;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
 
 import com.google.common.base.Charsets;
@@ -84,7 +83,7 @@ public class ClassIndexTest {
 		assertThat(content).contains("\nTomcatFromEclipseTest$WeirdClassLoader\n");
 	}
 
-	// https://github.com/atteo/evo-classindex/issues/8
+	// https://github.com/atteo/classindex/issues/8
 	@Test
 	public void shouldReadJaxbIndexCreatedByOlderVersions() {
 		// when

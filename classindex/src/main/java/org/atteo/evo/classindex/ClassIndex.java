@@ -37,7 +37,7 @@ import org.atteo.evo.classindex.processor.ClassIndexProcessor;
  * <p/>
  * <p>
  * Keep in mind that the class is indexed only when it is compiled with
- * evo-classindex.jar file in classpath.
+ * classindex.jar file in classpath.
  * </p>
  * <p/>
  * <p>
@@ -65,8 +65,8 @@ import org.atteo.evo.classindex.processor.ClassIndexProcessor;
  *         </execution>
  *       </executions>
  *       <dependencies>
- *         <groupId>org.atteo</groupId>
- *         <artifactId>evo-classindex-transformer</artifactId>
+ *         <groupId>org.atteo.classindex</groupId>
+ *         <artifactId>classindex-transformer</artifactId>
  *       </dependencies>
  *     </plugin>
  *   </plugins>
@@ -98,17 +98,32 @@ public class ClassIndex {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Iterable<Class<? extends T>> getSubclasses(Class<T> superClass) {
-		Iterable<String> entries = readIndexFile(SUBCLASS_INDEX_PREFIX + superClass.getCanonicalName());
+		return getSubclasses(superClass, Thread.currentThread().getContextClassLoader());
+	}
+
+	/**
+	 * Retrieves a list of subclasses of the given class.
+	 * <p/>
+	 * <p>
+	 * The class must be annotated with {@link IndexSubclasses} for it's subclasses to be indexed
+	 * at compile-time by {@link ClassIndexProcessor}.
+	 * </p>
+	 *
+	 * @param superClass class to find subclasses for
+	 * @param classLoader classloader for loading classes
+	 * @return list of subclasses
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Iterable<Class<? extends T>> getSubclasses(Class<T> superClass, ClassLoader classLoader) {
+		Iterable<String> entries = readIndexFile(classLoader, SUBCLASS_INDEX_PREFIX + superClass.getCanonicalName());
 		Set<Class<?>> classes = new HashSet<>();
-		findClasses(classes, entries);
+		findClasses(classLoader, classes, entries);
 		List<Class<? extends T>> subclasses = new ArrayList<>();
 
 		for (Class<?> klass : classes) {
-			if (!superClass.isAssignableFrom(klass)) {
-				throw new RuntimeException("Class '" + klass + "' is not a subclass of '"
-						+ superClass.getCanonicalName() + "'");
+			if (superClass.isAssignableFrom(klass)) {
+				subclasses.add((Class<? extends T>) klass);
 			}
-			subclasses.add((Class<? extends T>) klass);
 		}
 
 		return subclasses;
@@ -126,11 +141,27 @@ public class ClassIndex {
 	 * @return list of classes from package
 	 */
 	public static Iterable<Class<?>> getPackageClasses(String packageName) {
-		Iterable<String> entries = readIndexFile(packageName.replace(".", "/") + "/" + PACKAGE_INDEX_NAME);
+		return getPackageClasses(packageName, Thread.currentThread().getContextClassLoader());
+	}
+
+	/**
+	 * Retrieves a list of classes from given package.
+	 * <p/>
+	 * <p>
+	 * The package must be annotated with {@link IndexSubclasses} for the classes inside
+	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * </p>
+	 *
+	 * @param packageName name of the package to search classes for
+	 * @param classLoader classloader for loading classes
+	 * @return list of classes from package
+	 */
+	public static Iterable<Class<?>> getPackageClasses(String packageName, ClassLoader classLoader) {
+		Iterable<String> entries = readIndexFile(classLoader, packageName.replace(".", "/") + "/" + PACKAGE_INDEX_NAME);
 
 		Set<Class<?>> classes = new HashSet<>();
-		findClassesInPackage(packageName, classes, entries);
-		findClasses(classes, entries);
+		findClassesInPackage(classLoader, packageName, classes, entries);
+		findClasses(classLoader, classes, entries);
 		return classes;
 	}
 
@@ -146,9 +177,25 @@ public class ClassIndex {
 	 * @return list of annotated classes
 	 */
 	public static Iterable<Class<?>> getAnnotated(Class<? extends Annotation> annotation) {
-		Iterable<String> entries = readIndexFile(ANNOTATED_INDEX_PREFIX + annotation.getCanonicalName());
+		return getAnnotated(annotation, Thread.currentThread().getContextClassLoader());
+	}
+
+	/**
+	 * Retrieves a list of classes annotated by given annotation.
+	 * <p/>
+	 * <p>
+	 * The annotation must be annotated with {@link IndexAnnotated} for annotated classes
+	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * </p>
+	 *
+	 * @param annotation  annotation to search class for
+	 * @param classLoader classloader for loading classes
+	 * @return list of annotated classes
+	 */
+	public static Iterable<Class<?>> getAnnotated(Class<? extends Annotation> annotation, ClassLoader classLoader) {
+		Iterable<String> entries = readIndexFile(classLoader, ANNOTATED_INDEX_PREFIX + annotation.getCanonicalName());
 		Set<Class<?>> classes = new HashSet<>();
-		findClasses(classes, entries);
+		findClasses(classLoader, classes, entries);
 		return classes;
 	}
 
@@ -167,8 +214,26 @@ public class ClassIndex {
 	 * @see <a href="http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html#writingdoccomments">Writing doc comments</a>
 	 */
 	public static String getClassSummary(Class<?> klass) {
-		URL resource =
-				Thread.currentThread().getContextClassLoader().getResource(JAVADOC_PREFIX + klass.getCanonicalName());
+		return getClassSummary(klass, Thread.currentThread().getContextClassLoader());
+	}
+
+	/**
+	 * Returns the Javadoc summary for given class.
+	 * <p>
+	 * Javadoc summary is the first sentence of a Javadoc.
+	 * </p>
+	 * <p>
+	 * You need to use {@link IndexSubclasses} or {@link IndexAnnotated} with {@link IndexAnnotated#storeJavadoc()}
+	 * set to true.
+	 * </p>
+	 *
+	 * @param klass       class to retrieve summary for
+	 * @param classLoader classloader for loading classes
+	 * @return summary for given class, or null if it does not exists
+	 * @see <a href="http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html#writingdoccomments">Writing doc comments</a>
+	 */
+	public static String getClassSummary(Class<?> klass, ClassLoader classLoader) {
+		URL resource = classLoader.getResource(JAVADOC_PREFIX + klass.getCanonicalName());
 		if (resource == null) {
 			return null;
 		}
@@ -196,11 +261,11 @@ public class ClassIndex {
 		}
 	}
 
-	private static Iterable<String> readIndexFile(String resourceFile) {
+	private static Iterable<String> readIndexFile(ClassLoader classLoader, String resourceFile) {
 		Set<String> entries = new HashSet<>();
 
 		try {
-			Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(resourceFile);
+			Enumeration<URL> resources = classLoader.getResources(resourceFile);
 
 			while (resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
@@ -216,7 +281,7 @@ public class ClassIndex {
 					// publishing" option turned on, getResources() method above returns the same
 					// resource two times: first with incorrect path and second time with correct one.
 					// So ignore the one which does not exist.
-					// See: https://github.com/atteo/evo-classindex/issues/5
+					// See: https://github.com/atteo/classindex/issues/5
 				}
 			}
 		} catch (IOException e) {
@@ -225,11 +290,11 @@ public class ClassIndex {
 		return entries;
 	}
 
-	private static void findClasses(Set<Class<?>> classes, Iterable<String> entries) {
+	private static void findClasses(ClassLoader classLoader, Set<Class<?>> classes, Iterable<String> entries) {
 		for (String entry : entries) {
 			Class<?> klass;
 			try {
-				klass = Thread.currentThread().getContextClassLoader().loadClass(entry);
+				klass = classLoader.loadClass(entry);
 			} catch (ClassNotFoundException e) {
 				continue;
 			}
@@ -237,20 +302,19 @@ public class ClassIndex {
 		}
 	}
 
-	private static void findClassesInPackage(String packageName, Set<Class<?>> classes, Iterable<String> entries) {
+	private static void findClassesInPackage(ClassLoader classLoader, String packageName, Set<Class<?>> classes,
+			Iterable<String> entries) {
 		for (String entry : entries) {
 			if (entry.contains(".")) {
 				continue;
 			}
 			Class<?> klass;
 			try {
-				klass = Thread.currentThread().getContextClassLoader().loadClass(packageName + "." + entry);
+				klass = classLoader.loadClass(packageName + "." + entry);
 			} catch (ClassNotFoundException e) {
 				continue;
 			}
 			classes.add(klass);
 		}
 	}
-
-
 }
