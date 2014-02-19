@@ -6,13 +6,14 @@
 		<groupId>org.atteo</groupId>
 		<version>1.5</version>
 	</parent>
-	<artifactId>evo-classindex-top</artifactId>
-	<version>2.0-SNAPSHOT</version>
+	<groupId>org.atteo.classindex</groupId>
+	<artifactId>parent</artifactId>
+	<version>3.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Evo Class Index Parent</name>
-	<description>Evo Class Index is an annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package.</description>
+	<name>Atteo Class Index</name>
+	<description>Atteo Class Index is an annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package.</description>
 	<!-- Javadoc adds /apidocs to this URL when it tries to find Javadocs. Make it happy. -->
-	<url>http://atteo.org/static/evo-classindex</url>
+	<url>http://atteo.org/static/classindex</url>
 	<developers>
 		<developer>
 			<id>sentinel</id>
@@ -25,7 +26,7 @@
 		<module>classindex-transformer</module>
 	</modules>
 	<scm>
-		<connection>scm:git:https://github.com/atteo/evo-classindex.git</connection>
-		<url>https://github.com/atteo/evo-classindex</url>
+		<connection>scm:git:https://github.com/atteo/classindex.git</connection>
+		<url>https://github.com/atteo/classindex</url>
 	</scm>
 </project>

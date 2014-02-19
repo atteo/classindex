@@ -16,7 +16,7 @@ Version 2.1
 
 Version 2.0
 
-- You can now use [ClassIndex.getClassSummary()](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29) to retrieve first sentence of the Javadoc. For this to work specify storeJavadoc=true attribute when using IndexAnnotated or IndexSubclasses
+- You can now use [ClassIndex.getClassSummary()](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29) to retrieve first sentence of the Javadoc. For this to work specify storeJavadoc=true attribute when using IndexAnnotated or IndexSubclasses
 - Requires Java 1.7
 
 Version 1.4
@@ -42,9 +42,9 @@ Basic usage
 ===========
 There are two annotations which trigger the indexing:
 
-* [@IndexSubclasses](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/IndexSubclasses.html) when placed on interface makes an index of all classes implementing the interface, when placed on class makes an index of its subclasses and finally when placed in package-info.java it creates an index of all classes in that package.
-* [@IndexAnnotated](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/IndexAnnotated.html) when placed on an annotation makes an index of all classes marked with that annotation.
-To access the index at run-time use static methods of [ClassIndex](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html) class.
+* [@IndexSubclasses](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/IndexSubclasses.html) when placed on interface makes an index of all classes implementing the interface, when placed on class makes an index of its subclasses and finally when placed in package-info.java it creates an index of all classes in that package.
+* [@IndexAnnotated](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/IndexAnnotated.html) when placed on an annotation makes an index of all classes marked with that annotation.
+To access the index at run-time use static methods of [ClassIndex](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html) class.
 
 ```java
 @IndexAnnotated
@@ -68,7 +68,7 @@ For classes inside given package the index file is named "jaxb.index", it is loc
 
 Javadoc storage
 ===============
-From version 2.0 [@IndexAnnotated](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/IndexAnnotated.html) and [@IndexSubclasses](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/IndexSubclasses.html) allow to specify storeJavadoc attribute. When set to true Javadoc comment for the indexed classes will be stored. You can retrieve first sentence of the Javadoc using [ClassIndex.getClassSummary()](http://www.atteo.org/static/evo-classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29).
+From version 2.0 [@IndexAnnotated](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/IndexAnnotated.html) and [@IndexSubclasses](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/IndexSubclasses.html) allow to specify storeJavadoc attribute. When set to true Javadoc comment for the indexed classes will be stored. You can retrieve first sentence of the Javadoc using [ClassIndex.getClassSummary()](http://www.atteo.org/static/classindex/apidocs/org/atteo/evo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29).
 
 ```java
 @IndexAnnotated(storeJavadoc = true)
@@ -91,8 +91,8 @@ assertEquals("This is car", ClassIndex.getClassSummary(Car.class));
 Eclipse
 =======
 Eclipse uses its own Java compiler which is not strictly standard compliant and requires extra configuration.
-In Java Compiler -> Annotation Processing -> Factory Path you need to add both evo-classindex and Guava jar files.
-See the [screenshot](https://github.com/atteo/evo-classindex/issues/5#issuecomment-15365420).
+In Java Compiler -> Annotation Processing -> Factory Path you need to add both ClassIndex and Guava jar files.
+See the [screenshot](https://github.com/atteo/classindex/issues/5#issuecomment-15365420).
 
 License
 =======
@@ -102,13 +102,13 @@ Evo Inflector is available under [Apache License 2.0](https://www.apache.org/lic
 Download
 ========
 
-You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/evo-classindex/2.0/evo-classindex-2.0.jar) or use the following Maven dependency:
+You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/classindex/classindex/3.0/classindex-3.0.jar) or use the following Maven dependency:
 
 ```xml
 <dependency>
-    <groupId>org.atteo</groupId>
-    <artifactId>evo-classindex</artifactId>
-    <version>2.0</version>
+    <groupId>org.atteo.classindex</groupId>
+    <artifactId>classindex</artifactId>
+    <version>3.0</version>
 </dependency>
 ```
 

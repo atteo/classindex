@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>evo-classindex-top</artifactId>
-		<groupId>org.atteo</groupId>
-		<version>2.0-SNAPSHOT</version>
+		<artifactId>parent</artifactId>
+		<groupId>org.atteo.classindex</groupId>
+		<version>3.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>evo-classindex-transformer</artifactId>
-	<name>Evo Class Index Transformer</name>
+	<artifactId>classindex-transformer</artifactId>
+	<name>Atteo Class Index - Transformer</name>
 	<properties>
 		<exec-maven-plugin.version>1.2.1</exec-maven-plugin.version>
 		<maven-shade-plugin.version>2.2</maven-shade-plugin.version>
@@ -22,7 +22,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>evo-classindex</artifactId>
+			<artifactId>classindex</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>

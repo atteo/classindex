@@ -2,17 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>evo-classindex-top</artifactId>
-		<groupId>org.atteo</groupId>
-		<version>2.0-SNAPSHOT</version>
+		<artifactId>parent</artifactId>
+		<groupId>org.atteo.classindex</groupId>
+		<version>3.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>evo-classindex</artifactId>
-	<name>Evo Class Index</name>
+	<artifactId>classindex</artifactId>
+	<name>Atteo Class Index</name>
 	<dependencies>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-            <scope>test</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
