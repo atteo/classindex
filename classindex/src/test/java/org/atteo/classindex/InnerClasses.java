@@ -6,6 +6,7 @@ package org.atteo.classindex;
  * @author a.navrotskiy
  */
 public class InnerClasses {
+	// both static and non-static inner classes should be indexed
 	public static class InnerService implements Service {
 	}
 
@@ -13,6 +14,18 @@ public class InnerClasses {
 	}
 
 	@Component
-	public static class InnerComponent {
+	static class InnerComponent {
+	}
+
+	// anonymous inner classes should not be indexed
+	private Module module = new Module() {
+
+	};
+
+	// local classes should not be indexed
+	public void testMethod() {
+		class NotIndexedClass {
+
+		}
 	}
 }

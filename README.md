@@ -9,7 +9,7 @@ Changes
 
 Version 3.0
 
-- Static inner classes are also indexed
+- Non-local named nested classes are also indexed (both static and inner classes)
 - Fix: incremental compilation in IntelliJ IDEA
 - You can now specify class loader
 - package name nad groupId has changed to org.atteo.classindex
