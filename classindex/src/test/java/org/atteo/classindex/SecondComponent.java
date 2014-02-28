@@ -15,4 +15,6 @@ package org.atteo.classindex;
 
 @Component
 public class SecondComponent {
+	private SecondComponent() {
+	}
 }

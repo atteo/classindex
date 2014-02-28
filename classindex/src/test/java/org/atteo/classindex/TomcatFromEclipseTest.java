@@ -75,7 +75,8 @@ public class TomcatFromEclipseTest {
 
         try {
             Iterable<Class<?>> annotated = ClassIndex.getAnnotated(Component.class);
-			assertThat(annotated).containsOnly(FirstComponent.class, SecondComponent.class, InnerClasses.InnerComponent.class);
+			assertThat(annotated).containsOnly(FirstComponent.class, SecondComponent.class,
+					InnerClasses.InnerComponent.class, InnerClasses.InnerComponent.InnerInnerComponent.class);
         } finally {
             Thread.currentThread().setContextClassLoader(original);
         }

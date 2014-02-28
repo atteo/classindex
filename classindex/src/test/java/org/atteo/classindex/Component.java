@@ -13,7 +13,11 @@
  */
 package org.atteo.classindex;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 @IndexAnnotated(storeJavadoc = true)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Component {
 
 }
