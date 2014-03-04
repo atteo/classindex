@@ -7,6 +7,9 @@ ClassIndex is an annotation processor which at compile-time generates an index o
 Changes
 =======
 
+Version 3.1
+- Class filtering, mechanism to filter classes based on various criteria
+
 Version 3.0
 
 - Non-local named nested classes are also indexed (both static and inner classes)
@@ -46,8 +49,12 @@ Version 1.1
 - Fix incremental compilation (#1)
 
 
-Basic usage
-===========
+Usage
+=====
+
+Class Indexing
+--------------
+
 There are two annotations which trigger the indexing:
 
 * [@IndexSubclasses](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexSubclasses.html) when placed on interface makes an index of all classes implementing the interface, when placed on class makes an index of its subclasses and finally when placed in package-info.java it creates an index of all classes in that package.
@@ -75,7 +82,8 @@ For subclasses of the given class the index file name and format is compatible w
 For classes inside given package the index file is named "jaxb.index", it is located inside the package folder and it's format is compatible with what [JAXBContext.newInstance(String)](http://docs.oracle.com/javase/7/docs/api/javax/xml/bind/JAXBContext.html#newInstance(java.lang.String)) expects.
 
 Javadoc storage
-===============
+---------------
+
 From version 2.0 [@IndexAnnotated](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexAnnotated.html) and [@IndexSubclasses](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexSubclasses.html) allow to specify storeJavadoc attribute. When set to true Javadoc comment for the indexed classes will be stored. You can retrieve first sentence of the Javadoc using [ClassIndex.getClassSummary()](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29).
 
 ```java
@@ -94,6 +102,38 @@ public class Car {
 ...
  
 assertEquals("This is car", ClassIndex.getClassSummary(Car.class));
+```
+
+Class filtering
+---------------
+
+Filtering allows you to select only classes with desired characteristics. Here are some basic samples:
+
+* Selecting only top-level classes
+
+```java
+ClassFilter.only()
+	.topLevel()
+	.from(ClassIndex.getAnnotated(SomeAnnotation.class));
+```
+
+* Selecting only classes which are top level and public at the same time
+
+```java
+ClassFilter.only()
+	.topLevel()
+	.withModifiers(Modifier.PUBLIC)
+	.from(ClassIndex.getAnnotated(SomeAnnotation.class));
+
+```
+
+* Selecting classes which are top-level or enclosed in given class:
+
+```java
+ClassFilter.any(
+	ClassFilter.only().topLevel(),
+	ClassFilter.only().enclosedIn(WithInnerClassesInside.class)
+).from(ClassIndex.getAnnotated(SomeAnnotation.class);
 ```
 
 Eclipse
