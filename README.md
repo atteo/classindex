@@ -8,7 +8,7 @@ Changes
 =======
 
 Version 3.1
-- Class filtering, mechanism to filter classes based on various criteria
+- Class filtering - mechanism to filter classes based on various criteria
 
 Version 3.0
 
@@ -150,13 +150,13 @@ ClassIndex is available under [Apache License 2.0](https://www.apache.org/licens
 Download
 ========
 
-You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/classindex/classindex/3.0/classindex-3.0.jar) or use the following Maven dependency:
+You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/classindex/classindex/3.1/classindex-3.1.jar) or use the following Maven dependency:
 
 ```xml
 <dependency>
     <groupId>org.atteo.classindex</groupId>
     <artifactId>classindex</artifactId>
-    <version>3.0</version>
+    <version>3.1</version>
 </dependency>
 ```
 
