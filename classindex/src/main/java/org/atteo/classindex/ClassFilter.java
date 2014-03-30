@@ -48,7 +48,6 @@ public final class ClassFilter {
 		/**
 		 * Satisfies given predicate.
 		 * @param predicate predicate to satisfy
-		 * @return
 		 */
 		UnionBuilder satisfying(Predicate predicate);
 
