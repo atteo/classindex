@@ -4,6 +4,24 @@ ClassIndex is a much quicker alternative to every run-time annotation scanning l
 
 ClassIndex is an annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package. Java automatically [discovers](http://www.jcp.org/en/jsr/detail?id=269) the processor from the classpath.
 
+Why ClassIndex?
+===============
+
+Class path scanning is very slow process. Replacing it with compile-time indexing speeds Java applications bootstrap considerably.
+
+Here are the results of the [benchmark](https://github.com/atteo/classindex-benchmark) comparing ClassIndex with the various scanning solutions.
+
+| Library                  | Application startup time |
+| :----------------------- |-------------------------:|
+| None - hardcoded list    |                  0:00.18 |
+| [Scannotation](http://scannotation.sourceforge.net/)             |                  0:05.11 |
+| [Reflections](https://github.com/ronmamo/reflections)            |                  0:05.37 |
+| Reflections Maven plugin |                                                          0:00.52 |
+| [Corn](https://sites.google.com/site/javacornproject/corn-cps)   |                  0:24.60 |
+| ClassIndex               |                  0:00.18 |
+
+Notes: benchmark was performed on Intel i5-2520M CPU @ 2.50GHz, classpath size was set to 121MB.
+
 Changes
 =======
 

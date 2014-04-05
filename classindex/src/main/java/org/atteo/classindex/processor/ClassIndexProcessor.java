@@ -203,7 +203,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		} catch (FileNotFoundException e) {
 			/**
 			 * Ugly hack for Intellij IDEA incremental compilation.
-			 * The problem is that it throws on the files from the existence of FileNotFoundException, if they were not created during the
+			 * The problem is that it throws FileNotFoundException on the files, if they were not created during the
 			 * current session of compilation.
 			 */
 			final String realPath = e.getMessage();
