@@ -32,8 +32,8 @@ Version 3.0
 
 - Non-local named nested classes are also indexed (both static and inner classes)
 - Fix: incremental compilation in IntelliJ IDEA
-- You can now specify class loader
-- package name nad groupId has changed to org.atteo.classindex
+- You can now restrict the results to specific class loader
+- package name nad groupId have changed to org.atteo.classindex
 
 Version 2.2
 
@@ -157,7 +157,7 @@ ClassFilter.any(
 Eclipse
 =======
 Eclipse uses its own Java compiler which is not strictly standard compliant and requires extra configuration.
-In Java Compiler -> Annotation Processing -> Factory Path you need to add both ClassIndex and Guava jar files.
+In Java Compiler -> Annotation Processing -> Factory Path you need to add ClassIndex jar file.
 See the [screenshot](https://github.com/atteo/classindex/issues/5#issuecomment-15365420).
 
 License
