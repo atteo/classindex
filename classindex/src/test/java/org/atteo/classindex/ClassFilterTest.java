@@ -108,10 +108,11 @@ public class ClassFilterTest {
 	@Test
 	public void shouldReturnOnlyWithoutModifiers() {
 		// when
-		Iterable<Class<?>> result = ClassFilter.only().withModifiers(Modifier.STATIC).from(list);
+		Iterable<Class<?>> result = ClassFilter.only().withoutModifiers(Modifier.STATIC).from(list);
 
 		// then
-		assertThat(result).containsOnly(InnerClasses.InnerComponent.class);
+		assertThat(result).containsOnly(FirstComponent.class, SecondComponent.class,
+			InnerClasses.InnerComponent.InnerInnerComponent.class, InnerClasses.InnerModule.class);
 	}
 
 	@Test

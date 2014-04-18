@@ -24,8 +24,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.atteo.classindex.ClassFilter.UnionBuilder;
-
 public final class ClassFilter {
 	/**
 	 * Class from.
