@@ -101,6 +101,16 @@ public final class ClassFilter {
 		 * </p>
 		 */
 		UnionBuilder withPublicDefaultConstructor();
+
+		/**
+		 * Returns only interfaces.
+		 */
+		UnionBuilder interfaces();
+
+		/**
+		 * Returns only classes - filters out any interfaces.
+		 */
+		UnionBuilder classes();
 	}
 
 	private ClassFilter() {
@@ -227,6 +237,26 @@ public final class ClassFilter {
 					} catch (NoSuchMethodException | SecurityException e) {
 						return false;
 					}
+				}
+			});
+		}
+
+		@Override
+		public UnionBuilder interfaces() {
+			return satisfying(new Predicate() {
+				@Override
+				public boolean matches(Class<?> klass) {
+					return klass.isInterface();
+				}
+			});
+		}
+
+		@Override
+		public UnionBuilder classes() {
+			return satisfying(new Predicate() {
+				@Override
+				public boolean matches(Class<?> klass) {
+					return !klass.isInterface();
 				}
 			});
 		}

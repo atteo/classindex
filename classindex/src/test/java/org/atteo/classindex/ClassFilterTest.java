@@ -28,7 +28,7 @@ public class ClassFilterTest {
 	// given
 	private final List<Class<?>> list = Lists.<Class<?>>newArrayList(FirstComponent.class, SecondComponent.class,
 			InnerClasses.InnerComponent.class, InnerClasses.InnerComponent.InnerInnerComponent.class,
-			InnerClasses.InnerModule.class);
+			InnerClasses.InnerModule.class, Service.class);
 
 	@Test
 	public void shouldNotFilterWithAlwaysTruePredicate() {
@@ -41,7 +41,7 @@ public class ClassFilterTest {
 		}).from(list);
 
 		// then
-		assertThat(result).hasSize(5);
+		assertThat(result).hasSize(6);
 	}
 
 	@Test
@@ -50,7 +50,7 @@ public class ClassFilterTest {
 		Iterable<Class<?>> result = ClassFilter.only().topLevel().from(list);
 
 		// then
-		assertThat(result).containsOnly(FirstComponent.class, SecondComponent.class);
+		assertThat(result).containsOnly(FirstComponent.class, SecondComponent.class, Service.class);
 	}
 
 	@Test
@@ -59,7 +59,8 @@ public class ClassFilterTest {
 		Iterable<Class<?>> result = ClassFilter.only().topLevelOrStaticNested().from(list);
 
 		// then
-		assertThat(result).containsOnly(FirstComponent.class, SecondComponent.class, InnerClasses.InnerComponent.class);
+		assertThat(result).containsOnly(FirstComponent.class, SecondComponent.class, InnerClasses.InnerComponent.class,
+				Service.class);
 	}
 
 	@Test
@@ -112,7 +113,7 @@ public class ClassFilterTest {
 
 		// then
 		assertThat(result).containsOnly(FirstComponent.class, SecondComponent.class,
-			InnerClasses.InnerComponent.InnerInnerComponent.class, InnerClasses.InnerModule.class);
+			InnerClasses.InnerComponent.InnerInnerComponent.class, InnerClasses.InnerModule.class, Service.class);
 	}
 
 	@Test
@@ -131,6 +132,25 @@ public class ClassFilterTest {
 				ClassFilter.only().topLevel(),
 				ClassFilter.only().enclosedIn(InnerClasses.class)
 		).from(list);
+
+		// then
+		assertThat(result).containsOnly(FirstComponent.class, SecondComponent.class, InnerClasses.InnerComponent.class,
+				InnerClasses.InnerComponent.InnerInnerComponent.class, InnerClasses.InnerModule.class, Service.class);
+	}
+
+	@Test
+	public void shouldReturnOnlyInterfaces() {
+		// when
+		Iterable<Class<?>> result = ClassFilter.only().interfaces().from(list);
+
+		// then
+		assertThat(result).containsOnly(Service.class);
+	}
+
+	@Test
+	public void shouldReturnOnlyClasses() {
+		// when
+		Iterable<Class<?>> result = ClassFilter.only().classes().from(list);
 
 		// then
 		assertThat(result).containsOnly(FirstComponent.class, SecondComponent.class, InnerClasses.InnerComponent.class,
