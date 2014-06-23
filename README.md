@@ -25,6 +25,10 @@ Notes: benchmark was performed on Intel i5-2520M CPU @ 2.50GHz, classpath size w
 Changes
 =======
 
+Version 3.2
+- Better Java8 compatibility
+- Better filtering
+
 Version 3.1
 - Class filtering - mechanism to filter classes based on various criteria
 
