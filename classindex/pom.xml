@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>org.atteo.classindex</groupId>
-		<version>3-SNAPSHOT</version>
+		<version>3.2</version>
 	</parent>
 	<artifactId>classindex</artifactId>
 	<name>Atteo Class Index</name>
