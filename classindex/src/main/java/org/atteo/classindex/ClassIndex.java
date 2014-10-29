@@ -115,7 +115,7 @@ public class ClassIndex {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Iterable<Class<? extends T>> getSubclasses(Class<T> superClass, ClassLoader classLoader) {
-		Iterable<String> entries = readIndexFile(classLoader, SUBCLASS_INDEX_PREFIX + superClass.getCanonicalName());
+		Iterable<String> entries = getSubclassesNames(superClass, classLoader);
 		Set<Class<?>> classes = new HashSet<>();
 		findClasses(classLoader, classes, entries);
 		List<Class<? extends T>> subclasses = new ArrayList<>();
@@ -127,6 +127,40 @@ public class ClassIndex {
 		}
 
 		return subclasses;
+	}
+
+	/**
+	 * Retrieves names of subclasses of the given class.
+	 * <p/>
+	 * <p>
+	 * The class must be annotated with {@link IndexSubclasses} for it's subclasses to be indexed
+	 * at compile-time by {@link ClassIndexProcessor}.
+	 * </p>
+	 *
+	 * @param superClass class to find subclasses for
+	 * @param classLoader classloader for loading index file
+	 * @return names of subclasses
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Iterable<String> getSubclassesNames(Class<T> superClass) {
+		return getSubclassesNames(superClass, Thread.currentThread().getContextClassLoader());
+	}
+
+	/**
+	 * Retrieves names of subclasses of the given class.
+	 * <p/>
+	 * <p>
+	 * The class must be annotated with {@link IndexSubclasses} for it's subclasses to be indexed
+	 * at compile-time by {@link ClassIndexProcessor}.
+	 * </p>
+	 *
+	 * @param superClass class to find subclasses for
+	 * @param classLoader classloader for loading index file
+	 * @return names of subclasses
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Iterable<String> getSubclassesNames(Class<T> superClass, ClassLoader classLoader) {
+		return readIndexFile(classLoader, SUBCLASS_INDEX_PREFIX + superClass.getCanonicalName());
 	}
 
 	/**
@@ -188,15 +222,52 @@ public class ClassIndex {
 	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
 	 * </p>
 	 *
-	 * @param annotation  annotation to search class for
+	 * @param annotation annotation to search class for
 	 * @param classLoader classloader for loading classes
 	 * @return list of annotated classes
 	 */
 	public static Iterable<Class<?>> getAnnotated(Class<? extends Annotation> annotation, ClassLoader classLoader) {
-		Iterable<String> entries = readIndexFile(classLoader, ANNOTATED_INDEX_PREFIX + annotation.getCanonicalName());
+		Iterable<String> entries = getAnnotatedNames(annotation, classLoader);
 		Set<Class<?>> classes = new HashSet<>();
 		findClasses(classLoader, classes, entries);
 		return classes;
+	}
+
+	/**
+	 * Retrieves names of classes annotated by given annotation.
+	 * <p/>
+	 * <p>
+	 * The annotation must be annotated with {@link IndexAnnotated} for annotated classes
+	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * </p>
+	 * <p>
+	 * Please note there is no verification if the class really exists. It can be missing when incremental
+	 * compilation is used. Use {@link #getAnnotated(Class) } if you need the verification.
+	 * </p>
+	 * @param annotation annotation to search class for
+	 * @return names of annotated classes
+	 */
+	public static Iterable<String> getAnnotatedNames(Class<? extends Annotation> annotation) {
+		return getAnnotatedNames(annotation, Thread.currentThread().getContextClassLoader());
+	}
+
+	/**
+	 * Retrieves names of classes annotated by given annotation.
+	 * <p/>
+	 * <p>
+	 * The annotation must be annotated with {@link IndexAnnotated} for annotated classes
+	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * </p>
+	 * <p>
+	 * Please note there is no verification if the class really exists. It can be missing when incremental
+	 * compilation is used. Use {@link #getAnnotated(Class, ClassLoader) } if you need the verification.
+	 * </p>
+	 * @param annotation annotation to search class for
+	 * @param classLoader classloader for loading the index file
+	 * @return names of annotated classes
+	 */
+	public static Iterable<String> getAnnotatedNames(Class<? extends Annotation> annotation, ClassLoader classLoader) {
+		return readIndexFile(classLoader, ANNOTATED_INDEX_PREFIX + annotation.getCanonicalName());
 	}
 
 	/**
