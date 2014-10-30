@@ -2,7 +2,10 @@ About
 =====
 ClassIndex is a much quicker alternative to every run-time annotation scanning library like Reflections or Scannotations.
 
-ClassIndex is an annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package. Java automatically [discovers](http://www.jcp.org/en/jsr/detail?id=269) the processor from the classpath.
+ClassIndex consist of two parts:
+1. An annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package. Thanks to [automatic discovery](http://www.jcp.org/en/jsr/detail?id=269) the processor will be automatically executed when classindex.jar is added to the classpath.
+
+2. Run-time API to read the content of generated indexes.
 
 Why ClassIndex?
 ===============
@@ -24,6 +27,8 @@ Notes: benchmark was performed on Intel i5-2520M CPU @ 2.50GHz, classpath size w
 
 Changes
 =======
+Version 3.3
+- New methods to return names of classes as a string
 
 Version 3.2
 - Better Java8 compatibility
@@ -79,8 +84,9 @@ Class Indexing
 
 There are two annotations which trigger the indexing:
 
-* [@IndexSubclasses](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexSubclasses.html) when placed on interface makes an index of all classes implementing the interface, when placed on class makes an index of its subclasses and finally when placed in package-info.java it creates an index of all classes in that package.
+* [@IndexSubclasses](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexSubclasses.html) when placed on interface makes an index of all classes implementing the interface, when placed on a class makes an index of its subclasses and finally when placed in package-info.java it creates an index of all classes in that package.
 * [@IndexAnnotated](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexAnnotated.html) when placed on an annotation makes an index of all classes marked with that annotation.
+
 To access the index at run-time use static methods of [ClassIndex](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/ClassIndex.html) class.
 
 ```java
@@ -172,13 +178,13 @@ ClassIndex is available under [Apache License 2.0](https://www.apache.org/licens
 Download
 ========
 
-You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/classindex/classindex/3.1/classindex-3.1.jar) or use the following Maven dependency:
+You can download the library from [here](http://search.maven.org/remotecontent?filepath=org/atteo/classindex/classindex/3.3/classindex-3.3.jar) or use the following Maven dependency:
 
 ```xml
 <dependency>
     <groupId>org.atteo.classindex</groupId>
     <artifactId>classindex</artifactId>
-    <version>3.1</version>
+    <version>3.3</version>
 </dependency>
 ```
 
