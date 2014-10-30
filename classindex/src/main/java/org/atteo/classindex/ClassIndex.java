@@ -195,8 +195,47 @@ public class ClassIndex {
 
 		Set<Class<?>> classes = new HashSet<>();
 		findClassesInPackage(classLoader, packageName, classes, entries);
+
+		// also execute findClasses because old ClassIndex versions where creating
+		// this file in incorrect format with class full name instead of simple name
 		findClasses(classLoader, classes, entries);
 		return classes;
+	}
+
+	/**
+	 * Retrieves names of classes from given package.
+	 * <p/>
+	 * <p>
+	 * The package must be annotated with {@link IndexSubclasses} for the classes inside
+	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * </p>
+	 *
+	 * @param packageName name of the package to search classes for
+	 * @return names of classes from package
+	 */
+	public static Iterable<String> getPackageClassesNames(String packageName) {
+		return getPackageClassesNames(packageName, Thread.currentThread().getContextClassLoader());
+	}
+
+	/**
+	 * Retrieves names of classes from given package.
+	 * <p/>
+	 * <p>
+	 * The package must be annotated with {@link IndexSubclasses} for the classes inside
+	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * </p>
+	 *
+	 * @param packageName name of the package to search classes for
+	 * @param classLoader classloader for loading index file
+	 * @return names of classes from package
+	 */
+	public static Iterable<String> getPackageClassesNames(String packageName, ClassLoader classLoader) {
+		Iterable<String> entries = readIndexFile(classLoader, packageName.replace(".", "/") + "/" + PACKAGE_INDEX_NAME);
+		List<String> result = new ArrayList<>();
+		for (String simpleName : entries) {
+			result.add(packageName + "." + simpleName);
+		}
+		return result;
 	}
 
 	/**

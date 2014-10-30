@@ -42,12 +42,37 @@ public class ClassIndexTest {
 	}
 
 	@Test
+	public void shouldReturnNamesOfSubclasses() {
+		// when
+		Iterable<String> services = ClassIndex.getSubclassesNames(Service.class);
+
+		// then
+		assertThat(services).containsOnly(FirstService.class.getCanonicalName(), SecondService.class.getCanonicalName(),
+				InnerClasses.class.getCanonicalName() + "$" + InnerClasses.InnerService.class.getSimpleName());
+	}
+
+	@Test
 	public void shouldIndexAnnotated() {
 		// when
 		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(Component.class);
 		// then
 		assertThat(annotated).containsOnly(FirstComponent.class, SecondComponent.class,
 				InnerClasses.InnerComponent.class, InnerClasses.InnerComponent.InnerInnerComponent.class);
+	}
+
+	@Test
+	public void shouldReturnNamesOfAnnotated() {
+		// when
+		Iterable<String> annotated = ClassIndex.getAnnotatedNames(Component.class);
+		// then
+		assertThat(annotated).containsOnly(
+				FirstComponent.class.getCanonicalName(),
+				SecondComponent.class.getCanonicalName(), InnerClasses.class.getCanonicalName() + "$"
+					+ InnerClasses.InnerComponent.class.getSimpleName(), InnerClasses.class.getCanonicalName() + "$"
+					+ InnerClasses.InnerComponent.class.getSimpleName() + "$"
+					+ InnerClasses.InnerComponent.InnerInnerComponent.class.getSimpleName(),
+				// list of names contains also a deleted component
+				"org.atteo.classindex.DeletedComponent");
 	}
 
 	@Test
@@ -66,6 +91,17 @@ public class ClassIndexTest {
 
 		// then
 		assertThat(packageSubclasses).contains(FirstComponent.class, Component.class);
+	}
+
+	@Test
+	public void shouldReturnNamesOfClassesInsidePackage() {
+		// when
+		Iterable<String> packageSubclasses = ClassIndex.getPackageClassesNames(
+				ClassIndexTest.class.getPackage().getName());
+
+		// then
+		assertThat(packageSubclasses).contains(FirstComponent.class.getCanonicalName(),
+				Component.class.getCanonicalName());
 	}
 
 	@Test
