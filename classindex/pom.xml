@@ -58,6 +58,7 @@
 							<testExcludes>
 								<exclude>org/atteo/classindex/SecondService.java</exclude>
 							</testExcludes>
+							<useIncrementalCompilation>false</useIncrementalCompilation>
 						</configuration>
 					</execution>
 					<execution>
