@@ -58,7 +58,7 @@ Version 2.1
 
 Version 2.0
 
-- You can now use [ClassIndex.getClassSummary()](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29) to retrieve first sentence of the Javadoc. For this to work specify storeJavadoc=true attribute when using IndexAnnotated or IndexSubclasses
+- You can now use [ClassIndex.getClassSummary()](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29)) to retrieve first sentence of the Javadoc. For this to work specify storeJavadoc=true attribute when using IndexAnnotated or IndexSubclasses
 - Requires Java 1.7
 
 Version 1.4
@@ -89,9 +89,9 @@ Class Indexing
 There are two annotations which trigger compile-time indexing:
 
 * [@IndexSubclasses](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexSubclasses.html)
-	** when placed on interface makes an index of all classes implementing the interface,
-	** when placed on a class makes an index of its subclasses
-	** and finally when placed in package-info.java it creates an index of all classes inside that package.
+	* when placed on interface makes an index of all classes implementing the interface,
+	* when placed on a class makes an index of its subclasses
+	* and finally when placed in package-info.java it creates an index of all classes inside that package (directly - without subpackages).
 * [@IndexAnnotated](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexAnnotated.html) when placed on an annotation makes an index of all classes marked with that annotation.
 
 To access the index at run-time use static methods of [ClassIndex](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/ClassIndex.html) class.
@@ -119,7 +119,7 @@ For classes inside given package the index file is named "jaxb.index", it is loc
 Javadoc storage
 ---------------
 
-From version 2.0 [@IndexAnnotated](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexAnnotated.html) and [@IndexSubclasses](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexSubclasses.html) allow to specify storeJavadoc attribute. When set to true Javadoc comment for the indexed classes will be stored. You can retrieve first sentence of the Javadoc using [ClassIndex.getClassSummary()](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/ClassIndex.html#getClassSummary(java.lang.Class%29).
+From version 2.0 [@IndexAnnotated](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexAnnotated.html) and [@IndexSubclasses](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/IndexSubclasses.html) allow to specify storeJavadoc attribute. When set to true Javadoc comment for the indexed classes will be stored. You can retrieve first sentence of the Javadoc using [ClassIndex.getClassSummary()](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/ClassIndex.html#getClassSummary(java.lang.Class)).
 
 ```java
 @IndexAnnotated(storeJavadoc = true)

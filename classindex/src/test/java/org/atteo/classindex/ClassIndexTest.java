@@ -91,6 +91,7 @@ public class ClassIndexTest {
 
 		// then
 		assertThat(packageSubclasses).contains(FirstComponent.class, Component.class);
+		assertThat(packageSubclasses).doesNotContain(Important.class);
 	}
 
 	@Test
