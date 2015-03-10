@@ -57,8 +57,8 @@ import org.atteo.classindex.IndexSubclasses;
  * Generates index files for {@link ClassIndex}.
  */
 public class ClassIndexProcessor extends AbstractProcessor {
-	private Map<TypeElement, Set<String>> subclassMap = new HashMap<>();
-	private Map<TypeElement, Set<String>> annotatedMap = new HashMap<>();
+	private Map<String, Set<String>> subclassMap = new HashMap<>();
+	private Map<String, Set<String>> annotatedMap = new HashMap<>();
 	private Map<String, Set<String>> packageMap = new HashMap<>();
 
 	private boolean annotationDriven = true;
@@ -188,9 +188,9 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		return false;
 	}
 
-	private void writeIndexFiles(String prefix, Map<TypeElement, Set<String>> indexMap) throws IOException {
-		for (Map.Entry<TypeElement, Set<String>> entry : indexMap.entrySet()) {
-			writeSimpleNameIndexFile(entry.getValue(), prefix + entry.getKey().getQualifiedName().toString());
+	private void writeIndexFiles(String prefix, Map<String, Set<String>> indexMap) throws IOException {
+		for (Map.Entry<String, Set<String>> entry : indexMap.entrySet()) {
+			writeSimpleNameIndexFile(entry.getValue(), prefix + entry.getKey());
 		}
 	}
 
@@ -301,11 +301,11 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 	private void storeAnnotation(TypeElement annotationElement, TypeElement rootElement) throws IOException {
 		if (indexedAnnotations.contains(annotationElement.getQualifiedName().toString())) {
-			putElement(annotatedMap, annotationElement, rootElement);
+			putElement(annotatedMap, annotationElement.getQualifiedName().toString(), rootElement);
 		} else if (annotationDriven) {
 			IndexAnnotated indexAnnotated = annotationElement.getAnnotation(IndexAnnotated.class);
 			if (indexAnnotated != null) {
-				putElement(annotatedMap, annotationElement, rootElement);
+				putElement(annotatedMap, annotationElement.getQualifiedName().toString(), rootElement);
 				if (indexAnnotated.storeJavadoc()) {
 					storeJavadoc(rootElement);
 				}
@@ -315,11 +315,11 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 	private void storeSubclass(TypeElement superTypeElement, TypeElement rootElement) throws IOException {
 		if (indexedSuperclasses.contains(superTypeElement.getQualifiedName().toString())) {
-			putElement(subclassMap, superTypeElement, rootElement);
+			putElement(subclassMap, superTypeElement.getQualifiedName().toString(), rootElement);
 		} else if (annotationDriven) {
 			IndexSubclasses indexSubclasses = superTypeElement.getAnnotation(IndexSubclasses.class);
 			if (indexSubclasses != null) {
-				putElement(subclassMap, superTypeElement, rootElement);
+				putElement(subclassMap, superTypeElement.getQualifiedName().toString(), rootElement);
 
 				if (indexSubclasses.storeJavadoc()) {
 					storeJavadoc(rootElement);
@@ -328,7 +328,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		}
 		if (indexedSuperclasses.contains(superTypeElement.getQualifiedName().toString())
 				|| (annotationDriven && superTypeElement.getAnnotation(IndexSubclasses.class) != null)) {
-			putElement(subclassMap, superTypeElement, rootElement);
+			putElement(subclassMap, superTypeElement.getQualifiedName().toString(), rootElement);
 		}
 	}
 
