@@ -59,7 +59,7 @@ import org.atteo.classindex.IndexSubclasses;
 public class ClassIndexProcessor extends AbstractProcessor {
 	private Map<TypeElement, Set<String>> subclassMap = new HashMap<>();
 	private Map<TypeElement, Set<String>> annotatedMap = new HashMap<>();
-	private Map<PackageElement, Set<String>> packageMap = new HashMap<>();
+	private Map<String, Set<String>> packageMap = new HashMap<>();
 
 	private boolean annotationDriven = true;
 	private Set<String> indexedAnnotations = new HashSet<>();
@@ -173,8 +173,8 @@ public class ClassIndexProcessor extends AbstractProcessor {
 			writeIndexFiles(ClassIndex.SUBCLASS_INDEX_PREFIX, subclassMap);
 			writeIndexFiles(ClassIndex.ANNOTATED_INDEX_PREFIX, annotatedMap);
 
-			for (Map.Entry<PackageElement, Set<String>> entry : packageMap.entrySet()) {
-				writeSimpleNameIndexFile(entry.getValue(), entry.getKey().getQualifiedName().toString()
+			for (Map.Entry<String, Set<String>> entry : packageMap.entrySet()) {
+				writeSimpleNameIndexFile(entry.getValue(), entry.getKey()
 						.replace(".", "/")
 						+ "/" + ClassIndex.PACKAGE_INDEX_NAME);
 			}
@@ -334,13 +334,13 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 	private void storeClassFromPackage(PackageElement packageElement, TypeElement rootElement) throws IOException {
 		if (indexedPackages.contains(packageElement.getQualifiedName().toString())) {
-			putElement(packageMap, packageElement, rootElement);
+			putElement(packageMap, packageElement.getQualifiedName().toString(), rootElement);
 		} else if (annotationDriven) {
 			IndexSubclasses indexSubclasses = packageElement.getAnnotation(IndexSubclasses.class);
 			if (indexSubclasses != null) {
 				String simpleName = getShortName(rootElement);
 				if (simpleName != null) {
-					putElement(packageMap, packageElement, simpleName);
+					putElement(packageMap, packageElement.getQualifiedName().toString(), simpleName);
 					if (indexSubclasses.storeJavadoc()) {
 						storeJavadoc(rootElement);
 					}
