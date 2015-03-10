@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/atteo/classindex.svg)](https://travis-ci.org/atteo/classindex)
 [![Coverage Status](https://img.shields.io/coveralls/atteo/classindex.svg)](https://coveralls.io/r/atteo/classindex)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.atteo.classindex/classindex/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.atteo.classindex/classindex)
+[![Apache 2](http://img.shields.io/badge/license-Apache%202-red.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 About
 =====
