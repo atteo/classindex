@@ -8,8 +8,8 @@ About
 ClassIndex is a much quicker alternative to every run-time annotation scanning library like Reflections or Scannotations.
 
 ClassIndex consist of two parts:
-1. An annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package. Thanks to [automatic discovery](http://www.jcp.org/en/jsr/detail?id=269) the processor will be automatically executed when classindex.jar is added to the classpath.
 
+1. An annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package. Thanks to [automatic discovery](http://www.jcp.org/en/jsr/detail?id=269) the processor will be automatically executed when classindex.jar is added to the classpath.
 2. Run-time API to read the content of generated indexes.
 
 Why ClassIndex?
