@@ -182,8 +182,8 @@ There are two steps necessary:
 1.	First create a custom processor
 
 	```java
-	public class CustomProcessor extends ClassIndexProcessor {
-		public ImportantClassIndexProcessor() {
+	public class MyImportantClassIndexProcessor extends ClassIndexProcessor {
+		public MyImportantClassIndexProcessor() {
 			indexAnnotations(Entity.class);
 		}
 	}
