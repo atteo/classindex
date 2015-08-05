@@ -194,12 +194,13 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		}
 	}
 
-	private void readOldIndexFile(Set<String> entries, String resourceName) throws IOException {
+	private FileObject readOldIndexFile(Set<String> entries, String resourceName) throws IOException {
 		Reader reader = null;
 		try {
 			final FileObject resource = filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourceName);
 			reader = resource.openReader(true);
 			readOldIndexFile(entries, reader);
+			return resource;
 		} catch (FileNotFoundException e) {
 			/**
 			 * Ugly hack for Intellij IDEA incremental compilation.
@@ -221,6 +222,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 				reader.close();
 			}
 		}
+		return null;
 	}
 
 	private static void readOldIndexFile(Set<String> entries, Reader reader) throws IOException {
@@ -233,8 +235,11 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		}
 	}
 
-	private void writeIndexFile(Set<String> entries, String resourceName) throws IOException {
-		FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceName);
+	private void writeIndexFile(Set<String> entries, String resourceName, FileObject overrideFile) throws IOException {
+		FileObject file = overrideFile;
+		if (file == null) {
+			file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceName);
+		}
 		try (Writer writer = file.openWriter()) {
 			for (String entry : entries) {
 				writer.write(entry);
@@ -245,8 +250,21 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 	private void writeSimpleNameIndexFile(Set<String> elementList, String resourceName)
 			throws IOException {
-		readOldIndexFile(elementList, resourceName);
-		writeIndexFile(elementList, resourceName);
+		FileObject file = readOldIndexFile(elementList, resourceName);
+		if (file != null) {
+			/**
+			 * Ugly hack for Eclipse JDT incremental compilation.
+			 * Eclipse JDT can't createResource() after successful getResource().
+			 * But we can file.openWriter().
+			 */
+			try {
+				writeIndexFile(elementList, resourceName, file);
+				return;
+			} catch (IllegalStateException e) {
+				// Thrown by HotSpot Java Compiler
+			}
+		}
+		writeIndexFile(elementList, resourceName, null);
 	}
 
 	private void writeFile(String content, String resourceName) throws IOException {
