@@ -197,6 +197,41 @@ There are two steps necessary:
 
 Important note: you also need to ensure that your custom processor is always available on the classpath when compiling indexed classes. When that is not the case there will not be any error - those classes will be missing in the index.
 
+Making shaded jar
+-----------------
+During compilation ClassIndex writes index files. When creating a shaded jar those index files get overwritten by default. To not lost any indexed classes ClassIndex provides special transformer for Maven which merges the index files instead of overwriting them. To use it add the configuration below to your POM file:
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>@maven-shade-plugin.version@</version>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <transformers>
+                            <transformer implementation="org.atteo.classindex.ClassIndexTransformer"/>
+                        </transformers>
+                    </configuration>
+                </execution>
+            </executions>
+            <dependencies>
+                <dependency>
+                    <groupId>org.atteo.classindex</groupId>
+                    <artifactId>classindex-transformer</artifactId>
+                    <version>@class index version@</version>
+                </dependency>
+            </dependencies>
+        </plugin>
+    </plugins>
+</build>
+```
+
 Eclipse
 =======
 Eclipse uses its own Java compiler which is not strictly standard compliant and requires extra configuration.
