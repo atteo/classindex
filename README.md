@@ -32,6 +32,10 @@ Notes: benchmark was performed on Intel i5-2520M CPU @ 2.50GHz, classpath size w
 
 Changes
 =======
+Version 3.4
+- TypeElement and PackageElement cannot be used reliably as a key for the map
+- bring back compatibility with Android API < 19 by not depending on the availability of StandardCharsets class
+
 Version 3.3
 - New methods to return names of classes as a string
 
