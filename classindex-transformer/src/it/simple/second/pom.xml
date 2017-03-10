@@ -55,7 +55,7 @@
 							<goal>exec</goal>
 						</goals>
 						<configuration>
-							<executable>java</executable>
+							<executable>${java.home}/bin/java</executable>
 							<arguments>
 								<argument>-cp</argument>
 								<argument>${project.build.directory}/${project.build.finalName}.jar</argument>

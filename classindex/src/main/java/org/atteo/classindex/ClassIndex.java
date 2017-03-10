@@ -137,7 +137,6 @@ public class ClassIndex {
 	 * </p>
 	 *
 	 * @param superClass class to find subclasses for
-	 * @param classLoader classloader for loading index file
 	 * @return names of subclasses
 	 */
 	@SuppressWarnings("unchecked")
