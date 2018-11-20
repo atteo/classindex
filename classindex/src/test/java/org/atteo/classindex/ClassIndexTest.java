@@ -186,4 +186,10 @@ public class ClassIndexTest {
 	public void shouldStoreSummaryForSubclasses() {
 		assertEquals("First module", ClassIndex.getClassSummary(FirstModule.class));
 	}
+
+	@Test
+	public void shouldIndexClassesWithRepeatedAnnotations() {
+		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(RepeatableAnnotation.class);
+		assertThat(annotated).contains(StandardRepeated.class, Java8Repeated.class);
+	}
 }
