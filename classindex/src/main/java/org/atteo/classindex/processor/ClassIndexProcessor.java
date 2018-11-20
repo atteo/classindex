@@ -25,6 +25,7 @@ import java.lang.annotation.Inherited;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -36,6 +37,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -151,6 +153,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 					public Void visitType(TypeElement typeElement, Void o) {
 						try {
 							for (AnnotationMirror mirror : typeElement.getAnnotationMirrors()) {
+								storeRepeatableAnnotation(mirror, typeElement);
 								final TypeElement annotationElement = (TypeElement) mirror.getAnnotationType().asElement();
 								storeAnnotation(annotationElement, typeElement);
 							}
@@ -186,6 +189,20 @@ public class ClassIndexProcessor extends AbstractProcessor {
 		}
 
 		return false;
+	}
+
+	private void storeRepeatableAnnotation(final AnnotationMirror annotation, final TypeElement typeElement) throws IOException {
+		for (final AnnotationValue annotationField : annotation.getElementValues().values()) {
+			if (annotationField.getValue() instanceof List) {
+				for (final Object annotationFieldValue : (List)annotationField.getValue()) {
+					if (annotationFieldValue instanceof AnnotationMirror) {
+						final AnnotationMirror mirror = (AnnotationMirror) annotationFieldValue;
+						final TypeElement annotationElement = (TypeElement) mirror.getAnnotationType().asElement();
+						storeAnnotation(annotationElement, typeElement);
+					}
+				}
+			}
+		}
 	}
 
 	private void writeIndexFiles(String prefix, Map<String, Set<String>> indexMap) throws IOException {
