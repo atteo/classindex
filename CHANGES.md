@@ -1,5 +1,8 @@
 Changes
 =======
+Version 3.5
+- make sure @Repeatable annotations are correctly indexed
+
 Version 3.4
 - TypeElement and PackageElement cannot be used reliably as a key for the map
 - bring back compatibility with Android API < 19 by not depending on the availability of StandardCharsets class
