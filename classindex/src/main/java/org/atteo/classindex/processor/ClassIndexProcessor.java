@@ -193,14 +193,17 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 	private void storeRepeatableAnnotation(final AnnotationMirror annotation, final TypeElement typeElement) throws IOException {
 		for (final AnnotationValue annotationField : annotation.getElementValues().values()) {
-			if (annotationField.getValue() instanceof List) {
-				for (final Object annotationFieldValue : (List)annotationField.getValue()) {
-					if (annotationFieldValue instanceof AnnotationMirror) {
-						final AnnotationMirror mirror = (AnnotationMirror) annotationFieldValue;
-						final TypeElement annotationElement = (TypeElement) mirror.getAnnotationType().asElement();
-						storeAnnotation(annotationElement, typeElement);
-					}
+			if (!(annotationField.getValue() instanceof List)) {
+				continue;
+			}
+			for (final Object annotationFieldValue : (List)annotationField.getValue()) {
+				if (!(annotationFieldValue instanceof AnnotationMirror)) {
+					continue;
 				}
+
+				final AnnotationMirror mirror = (AnnotationMirror) annotationFieldValue;
+				final TypeElement annotationElement = (TypeElement) mirror.getAnnotationType().asElement();
+				storeAnnotation(annotationElement, typeElement);
 			}
 		}
 	}

@@ -21,5 +21,5 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(MergingAnnotation.class)
 public @interface RepeatableAnnotation {
-    String value();
+	String value();
 }

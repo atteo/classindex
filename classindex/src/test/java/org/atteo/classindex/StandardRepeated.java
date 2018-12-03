@@ -13,8 +13,9 @@
  */
 package org.atteo.classindex;
 
-import java.lang.annotation.Repeatable;
-
-@MergingAnnotation({@RepeatableAnnotation("Annotation1"),@RepeatableAnnotation("Annotation2")})
+@MergingAnnotation({
+	@RepeatableAnnotation("Annotation1"),
+	@RepeatableAnnotation("Annotation2")
+})
 public class StandardRepeated {
 }
