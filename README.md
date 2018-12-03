@@ -236,7 +236,7 @@ public class MyImportantClassIndexProcessor extends ClassIndexProcessor {
     }
 }
 ```
-In the constructor specify what indexes should be created by calling apriopriate methods:
+In the constructor specify what indexes should be created by calling appropriate methods:
 * [indexAnnotations(...)](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/processor/ClassIndexProcessor.html#indexAnnotations-java.lang.Class...-) - to create index of classes annotated with given annotations
 * [indexSubclasses(...)](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/processor/ClassIndexProcessor.html#indexSubclasses-java.lang.Class...-) - to create index of subclasses of given parent classes
 * [indexPackages(...)](http://www.atteo.org/static/classindex/apidocs/org/atteo/classindex/processor/ClassIndexProcessor.html#indexPackages-java.lang.String...-) - to create index of classes inside given packages.
