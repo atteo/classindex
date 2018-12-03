@@ -192,4 +192,10 @@ public class ClassIndexTest {
 		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(RepeatableAnnotation.class);
 		assertThat(annotated).contains(StandardRepeated.class, Java8Repeated.class);
 	}
+
+	@Test
+	public void shouldNotIndexClassesWithNonRepeatedAnnotations() {
+		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(NonRepeatableAnnotation.class);
+		assertThat(annotated).isEmpty();
+	}
 }

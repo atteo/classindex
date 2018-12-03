@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
+import java.lang.annotation.Repeatable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -203,6 +204,13 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 				final AnnotationMirror mirror = (AnnotationMirror) annotationFieldValue;
 				final TypeElement annotationElement = (TypeElement) mirror.getAnnotationType().asElement();
+
+				Repeatable repeatable = annotationElement.getAnnotation(Repeatable.class);
+
+				if (repeatable == null) {
+					continue;
+				}
+
 				storeAnnotation(annotationElement, typeElement);
 			}
 		}
