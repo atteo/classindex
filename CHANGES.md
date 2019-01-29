@@ -1,5 +1,8 @@
 Changes
 =======
+Version 3.6
+- remove dependency on JAXB API
+
 Version 3.5
 - make sure @Repeatable annotations are correctly indexed
 
