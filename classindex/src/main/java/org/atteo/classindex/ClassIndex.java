@@ -25,8 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.atteo.classindex.processor.ClassIndexProcessor;
-
 /**
  * Access to the compile-time generated index of classes.
  * <p/>
@@ -89,7 +87,7 @@ public class ClassIndex {
 	 * <p/>
 	 * <p>
 	 * The class must be annotated with {@link IndexSubclasses} for it's subclasses to be indexed
-	 * at compile-time by {@link ClassIndexProcessor}.
+	 * at compile-time by {@link org.atteo.classindex.processor.ClassIndexProcessor}.
 	 * </p>
 	 *
 	 * @param superClass class to find subclasses for
@@ -105,7 +103,7 @@ public class ClassIndex {
 	 * <p/>
 	 * <p>
 	 * The class must be annotated with {@link IndexSubclasses} for it's subclasses to be indexed
-	 * at compile-time by {@link ClassIndexProcessor}.
+	 * at compile-time by {@link org.atteo.classindex.processor.ClassIndexProcessor}.
 	 * </p>
 	 *
 	 * @param superClass class to find subclasses for
@@ -133,7 +131,7 @@ public class ClassIndex {
 	 * <p/>
 	 * <p>
 	 * The class must be annotated with {@link IndexSubclasses} for it's subclasses to be indexed
-	 * at compile-time by {@link ClassIndexProcessor}.
+	 * at compile-time by {@link org.atteo.classindex.processor.ClassIndexProcessor}.
 	 * </p>
 	 *
 	 * @param superClass class to find subclasses for
@@ -149,7 +147,7 @@ public class ClassIndex {
 	 * <p/>
 	 * <p>
 	 * The class must be annotated with {@link IndexSubclasses} for it's subclasses to be indexed
-	 * at compile-time by {@link ClassIndexProcessor}.
+	 * at compile-time by {@link org.atteo.classindex.processor.ClassIndexProcessor}.
 	 * </p>
 	 *
 	 * @param superClass class to find subclasses for
@@ -166,7 +164,7 @@ public class ClassIndex {
 	 * <p/>
 	 * <p>
 	 * The package must be annotated with {@link IndexSubclasses} for the classes inside
-	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * to be indexed at compile-time by {@link org.atteo.classindex.processor.ClassIndexProcessor}.
 	 * </p>
 	 *
 	 * @param packageName name of the package to search classes for
@@ -181,7 +179,7 @@ public class ClassIndex {
 	 * <p/>
 	 * <p>
 	 * The package must be annotated with {@link IndexSubclasses} for the classes inside
-	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * to be indexed at compile-time by {@link org.atteo.classindex.processor.ClassIndexProcessor}.
 	 * </p>
 	 *
 	 * @param packageName name of the package to search classes for
@@ -205,7 +203,7 @@ public class ClassIndex {
 	 * <p/>
 	 * <p>
 	 * The package must be annotated with {@link IndexSubclasses} for the classes inside
-	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * to be indexed at compile-time by {@link org.atteo.classindex.processor.ClassIndexProcessor}.
 	 * </p>
 	 *
 	 * @param packageName name of the package to search classes for
@@ -220,7 +218,7 @@ public class ClassIndex {
 	 * <p/>
 	 * <p>
 	 * The package must be annotated with {@link IndexSubclasses} for the classes inside
-	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * to be indexed at compile-time by {@link org.atteo.classindex.processor.ClassIndexProcessor}.
 	 * </p>
 	 *
 	 * @param packageName name of the package to search classes for
@@ -241,7 +239,7 @@ public class ClassIndex {
 	 * <p/>
 	 * <p>
 	 * The annotation must be annotated with {@link IndexAnnotated} for annotated classes
-	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * to be indexed at compile-time by {@link org.atteo.classindex.processor.ClassIndexProcessor}.
 	 * </p>
 	 *
 	 * @param annotation annotation to search class for
@@ -256,7 +254,7 @@ public class ClassIndex {
 	 * <p/>
 	 * <p>
 	 * The annotation must be annotated with {@link IndexAnnotated} for annotated classes
-	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * to be indexed at compile-time by {@link org.atteo.classindex.processor.ClassIndexProcessor}.
 	 * </p>
 	 *
 	 * @param annotation annotation to search class for
@@ -275,7 +273,7 @@ public class ClassIndex {
 	 * <p/>
 	 * <p>
 	 * The annotation must be annotated with {@link IndexAnnotated} for annotated classes
-	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * to be indexed at compile-time by {@link org.atteo.classindex.processor.ClassIndexProcessor}.
 	 * </p>
 	 * <p>
 	 * Please note there is no verification if the class really exists. It can be missing when incremental
@@ -293,7 +291,7 @@ public class ClassIndex {
 	 * <p/>
 	 * <p>
 	 * The annotation must be annotated with {@link IndexAnnotated} for annotated classes
-	 * to be indexed at compile-time by {@link ClassIndexProcessor}.
+	 * to be indexed at compile-time by {@link org.atteo.classindex.processor.ClassIndexProcessor}.
 	 * </p>
 	 * <p>
 	 * Please note there is no verification if the class really exists. It can be missing when incremental
