@@ -127,18 +127,18 @@
 					<testTarget>8</testTarget>
 				</configuration>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <_noee>true</_noee>
-                        <Import-Package><!--enforce empty imports--></Import-Package>
-                        <Export-Package>org.atteo.classindex</Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<_noee>true</_noee>
+						<Import-Package><!--enforce empty imports--></Import-Package>
+						<Export-Package>org.atteo.classindex</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
