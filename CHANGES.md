@@ -1,7 +1,7 @@
 Changes
 =======
-Version 3.7
-- make JAR file an OSGI bundle
+Version 3.8
+- make JAR file a valid OSGi bundle
 
 Version 3.6
 - remove dependency on JAXB API
