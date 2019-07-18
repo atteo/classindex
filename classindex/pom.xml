@@ -8,6 +8,7 @@
 	</parent>
 	<artifactId>classindex</artifactId>
 	<name>Atteo Class Index</name>
+	<packaging>bundle</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>com.google.guava</groupId>
