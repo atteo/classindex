@@ -401,7 +401,7 @@ public class ClassIndex {
 			Class<?> klass;
 			try {
 				klass = classLoader.loadClass(entry);
-			} catch (ClassNotFoundException e) {
+			} catch (ClassNotFoundException | NoClassDefFoundError e) {
 				continue;
 			}
 			classes.add(klass);
