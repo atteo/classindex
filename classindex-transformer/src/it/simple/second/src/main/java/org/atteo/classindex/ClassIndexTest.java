@@ -24,9 +24,15 @@ public class ClassIndexTest {
 		assertEquals(2, size(annotated));
 		Iterable<Class<?>> packageSubclasses = ClassIndex.getPackageClasses(
 				ClassIndexTest.class.getPackage().getName());
-		assertEquals(7, size(packageSubclasses));
+		assertEquals(9, size(packageSubclasses));
 		ServiceLoader<Service> loader = ServiceLoader.load(Service.class);
 		assertEquals(2, size(loader));
+
+		Iterable<Class<? extends ParentService>> parentServices = ClassIndex.getSubclasses(ParentService.class);
+		assertEquals(2, size(parentServices));
+
+		Iterable<Class<?>> customAnnotationClasses = ClassIndex.getAnnotated(CustomAnnotation.class);
+		assertEquals(2, size(parentServices));
 	}
 
 	private static void assertEquals(int expected, int actual) {

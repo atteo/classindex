@@ -7,6 +7,8 @@
 	<packaging>pom</packaging>
 	<name>ClassIndex Transformer Test</name>
 	<modules>
+		<module>parentmodule</module>
+		<module>compiletimemodule</module>
 		<module>first</module>
 		<module>second</module>
 	</modules>
