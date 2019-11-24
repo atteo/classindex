@@ -6,9 +6,9 @@
 		<artifactId>classindex-transformer-test</artifactId>
 		<version>@project.version@</version>
 	</parent>
-	<artifactId>classindex-transformer-test-first</artifactId>
+	<artifactId>classindex-transformer-test-compiletimemodule</artifactId>
 	<version>@project.version@</version>
-	<name>ClassIndex Transformer Test First</name>
+	<name>ClassIndex Transformer Test CompileTime Module(This Module is used by the first module at compile time but not at runtime)</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.atteo.classindex</groupId>
@@ -17,9 +17,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.atteo.classindex</groupId>
-			<artifactId>classindex-transformer-test-compiletimemodule</artifactId>
+			<artifactId>classindex-transformer-test-parentmodule</artifactId>
 			<version>${project.version}</version>
-			<optional>true</optional>
 		</dependency>
 	</dependencies>
 </project>

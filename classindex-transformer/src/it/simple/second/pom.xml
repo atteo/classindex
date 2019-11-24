@@ -13,6 +13,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.atteo.classindex</groupId>
+			<artifactId>classindex-transformer-test-parentmodule</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.atteo.classindex</groupId>
 			<artifactId>classindex-transformer-test-first</artifactId>
 			<version>${project.version}</version>
 		</dependency>
