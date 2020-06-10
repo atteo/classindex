@@ -5,3 +5,5 @@ bin/
 .classpath
 .project
 .config/
+*.iml
+.idea/

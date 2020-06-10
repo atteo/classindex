@@ -13,6 +13,9 @@
  */
 package org.atteo.classindex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -77,6 +80,8 @@ public class ClassIndex {
 	public static final String ANNOTATED_INDEX_PREFIX = "META-INF/annotations/";
 	public static final String PACKAGE_INDEX_NAME = "jaxb.index";
 	public static final String JAVADOC_PREFIX = "META-INF/javadocs/";
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ClassIndex.class);
 
 	private ClassIndex() {
 
@@ -402,6 +407,7 @@ public class ClassIndex {
 			try {
 				klass = classLoader.loadClass(entry);
 			} catch (ClassNotFoundException | NoClassDefFoundError e) {
+				LOGGER.warn("Exception occurred while trying to load class [{}] - {}", entry, e);
 				continue;
 			}
 			classes.add(klass);
@@ -418,6 +424,7 @@ public class ClassIndex {
 			try {
 				klass = classLoader.loadClass(packageName + "." + entry);
 			} catch (ClassNotFoundException | NoClassDefFoundError e) {
+				LOGGER.warn("Exception occurred while trying to load class [{}] - {}", packageName + "." + entry, e);
 				continue;
 			}
 			classes.add(klass);
