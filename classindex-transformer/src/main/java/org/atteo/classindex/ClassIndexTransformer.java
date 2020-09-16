@@ -13,17 +13,20 @@
  */
 package org.atteo.classindex;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
+import org.apache.maven.plugins.shade.relocation.Relocator;
 import org.apache.maven.plugins.shade.resource.ResourceTransformer;
 import org.codehaus.plexus.util.IOUtil;
 
@@ -31,32 +34,42 @@ public class ClassIndexTransformer implements ResourceTransformer {
 	public static final String SUBCLASS_INDEX_PREFIX = "META-INF/services/";
 	public static final String ANNOTATED_INDEX_PREFIX = "META-INF/annotations/";
 	public static final String PACKAGE_INDEX_NAME = "jaxb.index";
-
-	private ByteArrayOutputStream data;
-
-	private Map serviceEntries = new HashMap();
+	private final Map<String, ByteArrayOutputStream> serviceEntries = new HashMap<>();
+	private List<Relocator> relocators;
 
 	@Override
 	public boolean canTransformResource(String resource) {
-		if (resource.startsWith(SUBCLASS_INDEX_PREFIX) || resource.startsWith(ANNOTATED_INDEX_PREFIX)
-				|| resource.endsWith("/" + PACKAGE_INDEX_NAME)) {
-			data = (ByteArrayOutputStream) serviceEntries.get(resource);
-
-			if (data == null) {
-				data = new ByteArrayOutputStream();
-				serviceEntries.put(resource, data);
-			}
-			return true;
-		}
-
-		return false;
+		return resource.startsWith(SUBCLASS_INDEX_PREFIX)
+				|| resource.startsWith(ANNOTATED_INDEX_PREFIX)
+				|| resource.endsWith("/" + PACKAGE_INDEX_NAME);
 	}
 
 	@Override
-	public void processResource(String resource, InputStream is, List relocators)
+	public void processResource(String resource, InputStream is, List<Relocator> relocators)
 			throws IOException {
-		IOUtil.copy(is, data);
-		is.close();
+		if (this.relocators == null) {
+			this.relocators = relocators;
+		}
+
+		ByteArrayOutputStream data = serviceEntries.get(resource);
+		if (data == null) {
+			data = new ByteArrayOutputStream();
+			serviceEntries.put(resource, data);
+		}
+
+		try {
+			String content = IOUtil.toString(is, StandardCharsets.UTF_8.name());
+			StringReader reader = new StringReader(content);
+			BufferedReader lineReader = new BufferedReader(reader);
+			String line;
+			while ((line = lineReader.readLine()) != null) {
+				String qualifiedClassName = relocateIfNeeded(line);
+				data.write(qualifiedClassName.getBytes(StandardCharsets.UTF_8));
+				data.write("\n".getBytes(StandardCharsets.UTF_8));
+			}
+		} finally {
+			is.close();
+		}
 	}
 
 	@Override
@@ -67,12 +80,36 @@ public class ClassIndexTransformer implements ResourceTransformer {
 	@Override
 	public void modifyOutputStream(JarOutputStream jos)
 			throws IOException {
-		for (Iterator i = serviceEntries.keySet().iterator(); i.hasNext();) {
-			String key = (String) i.next();
-			ByteArrayOutputStream stream = (ByteArrayOutputStream) serviceEntries.get(key);
-			jos.putNextEntry(new JarEntry(key));
+		for (Map.Entry<String, ByteArrayOutputStream> entry : serviceEntries.entrySet()) {
+			String key = entry.getKey();
+			ByteArrayOutputStream stream = entry.getValue();
+			jos.putNextEntry(new JarEntry(relocateFileName(key)));
 			IOUtil.copy(new ByteArrayInputStream(stream.toByteArray()), jos);
 			stream.reset();
 		}
+	}
+
+	private String relocateFileName(String key) {
+		String prefix = "";
+		if (key.startsWith(SUBCLASS_INDEX_PREFIX)) {
+			prefix = SUBCLASS_INDEX_PREFIX;
+		} else if (key.startsWith(ANNOTATED_INDEX_PREFIX)) {
+			prefix = ANNOTATED_INDEX_PREFIX;
+		}
+		return prefix + relocateIfNeeded(key.substring(prefix.length()));
+	}
+
+	private String relocateIfNeeded(String key) {
+		if (relocators == null) {
+			return key;
+		}
+
+		for (Relocator relocator : relocators) {
+			if (relocator.canRelocateClass(key)) {
+				return relocator.relocateClass(key);
+			}
+		}
+
+		return key;
 	}
 }

@@ -35,6 +35,12 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
+							<relocations>
+								<relocation>
+									<pattern>org.atteo.tobemoved</pattern>
+									<shadedPattern>shaded.org.atteo.tobemoved</shadedPattern>
+								</relocation>
+							</relocations>
 							<transformers>
 								<transformer implementation="org.atteo.classindex.ClassIndexTransformer"/>
 							</transformers>
