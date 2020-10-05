@@ -21,7 +21,7 @@ public class ClassIndexTest {
 		Iterable<Class<? extends Service>> services = ClassIndex.getSubclasses(Service.class);
 		assertEquals(2, size(services));
 		Iterable<Class<?>> annotated = ClassIndex.getAnnotated(Component.class);
-		assertEquals(2, size(annotated));
+		assertEquals(3, size(annotated));
 		Iterable<Class<?>> packageSubclasses = ClassIndex.getPackageClasses(
 				ClassIndexTest.class.getPackage().getName());
 		assertEquals(9, size(packageSubclasses));
