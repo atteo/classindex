@@ -1,5 +1,11 @@
 Changes
 =======
+Version 3.10
+- support relocations in classindex-transformer (#64)
+
+Version 3.9
+- also check for NoClassDefFoundError during class loading (#56)
+
 Version 3.8
 - make JAR file a valid OSGi bundle
 
