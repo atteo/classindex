@@ -1,7 +1,7 @@
 package org.atteo.classindex.tests;
 
 import org.atteo.classindex.ClassIndex;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
