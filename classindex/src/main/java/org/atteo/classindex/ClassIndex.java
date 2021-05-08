@@ -19,11 +19,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Access to the compile-time generated index of classes.
@@ -93,8 +98,7 @@ public class ClassIndex {
 	 * @param superClass class to find subclasses for
 	 * @return list of subclasses
 	 */
-	@SuppressWarnings("unchecked")
-	public static <T> Iterable<Class<? extends T>> getSubclasses(Class<T> superClass) {
+	public static <T> List<Class<? extends T>> getSubclasses(Class<T> superClass) {
 		return getSubclasses(superClass, Thread.currentThread().getContextClassLoader());
 	}
 
@@ -111,19 +115,15 @@ public class ClassIndex {
 	 * @return list of subclasses
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> Iterable<Class<? extends T>> getSubclasses(Class<T> superClass, ClassLoader classLoader) {
-		Iterable<String> entries = getSubclassesNames(superClass, classLoader);
+	public static <T> List<Class<? extends T>> getSubclasses(Class<T> superClass, ClassLoader classLoader) {
+		List<String> entries = getSubclassesNames(superClass, classLoader);
 		Set<Class<?>> classes = new HashSet<>();
 		findClasses(classLoader, classes, entries);
-		List<Class<? extends T>> subclasses = new ArrayList<>();
 
-		for (Class<?> klass : classes) {
-			if (superClass.isAssignableFrom(klass)) {
-				subclasses.add((Class<? extends T>) klass);
-			}
-		}
-
-		return subclasses;
+		return classes.stream()
+			.filter(superClass::isAssignableFrom)
+            .map(klass -> (Class<? extends T>)klass)
+			.collect(toList());
 	}
 
 	/**
@@ -137,8 +137,7 @@ public class ClassIndex {
 	 * @param superClass class to find subclasses for
 	 * @return names of subclasses
 	 */
-	@SuppressWarnings("unchecked")
-	public static <T> Iterable<String> getSubclassesNames(Class<T> superClass) {
+	public static <T> List<String> getSubclassesNames(Class<T> superClass) {
 		return getSubclassesNames(superClass, Thread.currentThread().getContextClassLoader());
 	}
 
@@ -154,8 +153,7 @@ public class ClassIndex {
 	 * @param classLoader classloader for loading index file
 	 * @return names of subclasses
 	 */
-	@SuppressWarnings("unchecked")
-	public static <T> Iterable<String> getSubclassesNames(Class<T> superClass, ClassLoader classLoader) {
+	public static <T> List<String> getSubclassesNames(Class<T> superClass, ClassLoader classLoader) {
 		return readIndexFile(classLoader, SUBCLASS_INDEX_PREFIX + superClass.getCanonicalName());
 	}
 
@@ -170,7 +168,7 @@ public class ClassIndex {
 	 * @param packageName name of the package to search classes for
 	 * @return list of classes from package
 	 */
-	public static Iterable<Class<?>> getPackageClasses(String packageName) {
+	public static List<Class<?>> getPackageClasses(String packageName) {
 		return getPackageClasses(packageName, Thread.currentThread().getContextClassLoader());
 	}
 
@@ -186,8 +184,8 @@ public class ClassIndex {
 	 * @param classLoader classloader for loading classes
 	 * @return list of classes from package
 	 */
-	public static Iterable<Class<?>> getPackageClasses(String packageName, ClassLoader classLoader) {
-		Iterable<String> entries = readIndexFile(classLoader, packageName.replace(".", "/") + "/" + PACKAGE_INDEX_NAME);
+	public static List<Class<?>> getPackageClasses(String packageName, ClassLoader classLoader) {
+		List<String> entries = readIndexFile(classLoader, packageName.replace(".", "/") + "/" + PACKAGE_INDEX_NAME);
 
 		Set<Class<?>> classes = new HashSet<>();
 		findClassesInPackage(classLoader, packageName, classes, entries);
@@ -195,7 +193,7 @@ public class ClassIndex {
 		// also execute findClasses because old ClassIndex versions where creating
 		// this file in incorrect format with class full name instead of simple name
 		findClasses(classLoader, classes, entries);
-		return classes;
+		return new ArrayList<>(classes);
 	}
 
 	/**
@@ -209,7 +207,7 @@ public class ClassIndex {
 	 * @param packageName name of the package to search classes for
 	 * @return names of classes from package
 	 */
-	public static Iterable<String> getPackageClassesNames(String packageName) {
+	public static List<String> getPackageClassesNames(String packageName) {
 		return getPackageClassesNames(packageName, Thread.currentThread().getContextClassLoader());
 	}
 
@@ -225,13 +223,12 @@ public class ClassIndex {
 	 * @param classLoader classloader for loading index file
 	 * @return names of classes from package
 	 */
-	public static Iterable<String> getPackageClassesNames(String packageName, ClassLoader classLoader) {
-		Iterable<String> entries = readIndexFile(classLoader, packageName.replace(".", "/") + "/" + PACKAGE_INDEX_NAME);
-		List<String> result = new ArrayList<>();
-		for (String simpleName : entries) {
-			result.add(packageName + "." + simpleName);
-		}
-		return result;
+	public static List<String> getPackageClassesNames(String packageName, ClassLoader classLoader) {
+		List<String> entries = readIndexFile(classLoader, packageName.replace(".", "/") + "/" + PACKAGE_INDEX_NAME);
+
+		return entries.stream()
+			.map(simpleName -> packageName + "." + simpleName)
+			.collect(toList());
 	}
 
 	/**
@@ -245,7 +242,7 @@ public class ClassIndex {
 	 * @param annotation annotation to search class for
 	 * @return list of annotated classes
 	 */
-	public static Iterable<Class<?>> getAnnotated(Class<? extends Annotation> annotation) {
+	public static List<Class<?>> getAnnotated(Class<? extends Annotation> annotation) {
 		return getAnnotated(annotation, Thread.currentThread().getContextClassLoader());
 	}
 
@@ -261,11 +258,11 @@ public class ClassIndex {
 	 * @param classLoader classloader for loading classes
 	 * @return list of annotated classes
 	 */
-	public static Iterable<Class<?>> getAnnotated(Class<? extends Annotation> annotation, ClassLoader classLoader) {
-		Iterable<String> entries = getAnnotatedNames(annotation, classLoader);
+	public static List<Class<?>> getAnnotated(Class<? extends Annotation> annotation, ClassLoader classLoader) {
+		List<String> entries = getAnnotatedNames(annotation, classLoader);
 		Set<Class<?>> classes = new HashSet<>();
 		findClasses(classLoader, classes, entries);
-		return classes;
+		return new ArrayList<>(classes);
 	}
 
 	/**
@@ -282,7 +279,7 @@ public class ClassIndex {
 	 * @param annotation annotation to search class for
 	 * @return names of annotated classes
 	 */
-	public static Iterable<String> getAnnotatedNames(Class<? extends Annotation> annotation) {
+	public static List<String> getAnnotatedNames(Class<? extends Annotation> annotation) {
 		return getAnnotatedNames(annotation, Thread.currentThread().getContextClassLoader());
 	}
 
@@ -301,7 +298,7 @@ public class ClassIndex {
 	 * @param classLoader classloader for loading the index file
 	 * @return names of annotated classes
 	 */
-	public static Iterable<String> getAnnotatedNames(Class<? extends Annotation> annotation, ClassLoader classLoader) {
+	public static List<String> getAnnotatedNames(Class<? extends Annotation> annotation, ClassLoader classLoader) {
 		return readIndexFile(classLoader, ANNOTATED_INDEX_PREFIX + annotation.getCanonicalName());
 	}
 
@@ -344,7 +341,9 @@ public class ClassIndex {
 			return null;
 		}
 		try {
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(), "UTF-8"))) {
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(),
+				StandardCharsets.UTF_8))) {
+
 				StringBuilder builder = new StringBuilder();
 				String line = reader.readLine();
 				while (line != null) {
@@ -367,7 +366,7 @@ public class ClassIndex {
 		}
 	}
 
-	private static Iterable<String> readIndexFile(ClassLoader classLoader, String resourceFile) {
+	private static List<String> readIndexFile(ClassLoader classLoader, String resourceFile) {
 		Set<String> entries = new HashSet<>();
 
 		try {
@@ -375,7 +374,8 @@ public class ClassIndex {
 
 			while (resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
-				try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(), "UTF-8"))) {
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(),
+					StandardCharsets.UTF_8))) {
 
 					String line = reader.readLine();
 					while (line != null) {
@@ -393,34 +393,30 @@ public class ClassIndex {
 		} catch (IOException e) {
 			throw new RuntimeException("ClassIndex: Cannot read class index", e);
 		}
-		return entries;
+		return new ArrayList<>(entries);
 	}
 
-	private static void findClasses(ClassLoader classLoader, Set<Class<?>> classes, Iterable<String> entries) {
-		for (String entry : entries) {
-			Class<?> klass;
-			try {
-				klass = classLoader.loadClass(entry);
-			} catch (ClassNotFoundException | NoClassDefFoundError e) {
-				continue;
-			}
-			classes.add(klass);
-		}
+	private static void findClasses(ClassLoader classLoader, Set<Class<?>> classes, List<String> entries) {
+		entries.stream()
+			.flatMap(entry -> loadClass(classLoader, entry))
+			.collect(Collectors.toCollection(() -> classes));
 	}
 
 	private static void findClassesInPackage(ClassLoader classLoader, String packageName, Set<Class<?>> classes,
-			Iterable<String> entries) {
-		for (String entry : entries) {
-			if (entry.contains(".")) {
-				continue;
-			}
-			Class<?> klass;
-			try {
-				klass = classLoader.loadClass(packageName + "." + entry);
-			} catch (ClassNotFoundException | NoClassDefFoundError e) {
-				continue;
-			}
-			classes.add(klass);
+			List<String> entries) {
+
+		entries.stream()
+			.filter(entry -> !entry.contains("."))
+            .map(entry -> packageName + "." + entry)
+			.flatMap(entry -> loadClass(classLoader, entry))
+			.collect(Collectors.toCollection(() -> classes));
+	}
+
+	private static Stream<? extends Class<?>> loadClass(ClassLoader classLoader, String entry) {
+		try {
+			return Stream.of(classLoader.loadClass(entry));
+		} catch (ClassNotFoundException | NoClassDefFoundError e) {
+			return Stream.empty();
 		}
 	}
 }
