@@ -24,10 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.atteo.classindex.processor.Important;
 import org.atteo.classindex.processor.Plugin;
 import org.atteo.classindex.second.ExtraPlugin;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 
@@ -111,7 +108,7 @@ public class ClassIndexTest {
 		String resourceName = ClassIndexTest.class.getPackage().getName().replace('.', '/')
 				+ '/' + ClassIndex.PACKAGE_INDEX_NAME;
 		URL resource = Thread.currentThread().getContextClassLoader().getResource(resourceName);
-		assertNotNull(resource);
+		assertThat(resource).isNotNull();
 		InputStream stream = resource.openStream();
 		String content = CharStreams.toString(new InputStreamReader(stream, Charsets.UTF_8));
 
@@ -179,12 +176,12 @@ public class ClassIndexTest {
 
 	@Test
 	public void shouldStoreSummaryForAnnotated() {
-		assertEquals("First component", ClassIndex.getClassSummary(FirstComponent.class));
+	    assertThat(ClassIndex.getClassSummary(FirstComponent.class)).isEqualTo("First component");
 	}
 
 	@Test
 	public void shouldStoreSummaryForSubclasses() {
-		assertEquals("First module", ClassIndex.getClassSummary(FirstModule.class));
+		assertThat(ClassIndex.getClassSummary(FirstModule.class)).isEqualTo("First module");
 	}
 
 	@Test

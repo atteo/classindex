@@ -11,21 +11,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.atteo.classindex;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.ops4j.pax.exam.CoreOptions.bundle;
-import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+package org.atteo.classindex.tests;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import org.atteo.classindex.ClassIndex;
+import org.atteo.classindex.IndexAnnotated;
+import org.atteo.classindex.IndexSubclasses;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -36,6 +31,14 @@ import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.ops4j.pax.exam.CoreOptions.bundle;
+import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
+import static org.ops4j.pax.exam.CoreOptions.junitBundles;
+import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 
 /**
@@ -51,8 +54,8 @@ public class RunOSGiContainerIntegrationTest {
 	@Configuration
 	public Option[] configure() {
 
-		final String clientBundleLocation = System.getProperty("client.bundle.artifact.location",
-				"target/classindex-" + System.getProperty("project.version") + ".jar");
+		final String clientBundleLocation = "../classindex/target/classindex-" + System.getProperty("project.version")
+			+ ".jar";
 
 		final List<Option> allOptions = new ArrayList<>();
 		allOptions.add(cleanCaches());
@@ -78,5 +81,4 @@ public class RunOSGiContainerIntegrationTest {
 		assertEquals("Expecting " + bundle.getSymbolicName() + " bundle to be active", Bundle.ACTIVE,
 				bundle.getState());
 	}
-
 }

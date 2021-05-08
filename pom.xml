@@ -42,11 +42,21 @@
 	</build>
 	<profiles>
 		<profile>
+			<id>record-tests</id>
 			<activation>
 				<jdk>16</jdk>
 			</activation>
 			<modules>
 				<module>classindex-record-tests</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>osgi-tests</id>
+			<activation>
+				<jdk>1.8</jdk>
+			</activation>
+			<modules>
+				<module>classindex-osgi-tests</module>
 			</modules>
 		</profile>
 	</profiles>

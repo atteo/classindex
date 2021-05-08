@@ -25,38 +25,6 @@
 			<artifactId>assertj-core</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- test dependencies for OSGi test -->
-		<dependency>
-			<groupId>org.ops4j.pax.exam</groupId>
-			<artifactId>pax-exam-junit4</artifactId>
-			<version>4.8.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.exam</groupId>
-			<artifactId>pax-exam-container-native</artifactId>
-			<version>4.8.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.exam</groupId>
-			<artifactId>pax-exam-link-mvn</artifactId>
-			<version>4.8.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
-			<version>1_2</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- OSGi framework to test with -->
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.framework</artifactId>
-			<version>5.4.0</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -168,37 +136,6 @@
 						</Import-Package>
 						<Export-Package>org.atteo.classindex</Export-Package>
 					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>*IntegrationTest.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<systemPropertyVariables>
-						<client.bundle.artifact.location>${project.build.directory}/${project.build.finalName}.jar</client.bundle.artifact.location>
-						<project.version>${project.version}</project.version>
-						<project.build.directory>${project.build.directory}</project.build.directory>
-					</systemPropertyVariables>
-					<includes>
-						<include>*IntegrationTest.java</include>
-					</includes>
 				</configuration>
 			</plugin>
 		</plugins>
