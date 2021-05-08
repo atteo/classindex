@@ -40,4 +40,14 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<activation>
+				<jdk>16</jdk>
+			</activation>
+			<modules>
+				<module>classindex-record-tests</module>
+			</modules>
+		</profile>
+	</profiles>
 </project>

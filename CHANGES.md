@@ -1,5 +1,8 @@
 Changes
 =======
+Version 3.11
+- do not crash on Java records
+
 Version 3.10
 - support relocations in classindex-transformer (#64)
 

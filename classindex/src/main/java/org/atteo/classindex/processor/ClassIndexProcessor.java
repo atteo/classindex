@@ -165,6 +165,10 @@ public class ClassIndexProcessor extends AbstractProcessor {
 						} catch (IOException e) {
 							messager.printMessage(Diagnostic.Kind.ERROR, "[ClassIndexProcessor] " + e.getMessage());
 						}
+
+						if (typeElement.getKind().toString().equals("RECORD")) {
+						    return null;
+						}
 						return super.visitType(typeElement, o);
 					}
 				}, null);
