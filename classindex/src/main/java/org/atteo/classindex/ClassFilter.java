@@ -24,6 +24,11 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated Now that ClassIndex methods return lists use Java 8 Stream API to filter them.
+ */
+
+@Deprecated
 public final class ClassFilter {
 	/**
 	 * Class from.
