@@ -234,7 +234,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 			readOldIndexFile(entries, reader);
 			return resource;
 		} catch (FileNotFoundException e) {
-			/**
+			/*
 			 * Ugly hack for Intellij IDEA incremental compilation.
 			 * The problem is that it throws FileNotFoundException on the files, if they were not created during the
 			 * current session of compilation.
@@ -284,7 +284,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 			throws IOException {
 		FileObject file = readOldIndexFile(elementList, resourceName);
 		if (file != null) {
-			/**
+			/*
 			 * Ugly hack for Eclipse JDT incremental compilation.
 			 * Eclipse JDT can't createResource() after successful getResource().
 			 * But we can file.openWriter().
@@ -407,11 +407,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 	}
 
 	private <K> void putElement(Map<K, Set<String>> map, K keyElement, String valueElement) {
-		Set<String> set = map.get(keyElement);
-		if (set == null) {
-			set = new TreeSet<>();
-			map.put(keyElement, set);
-		}
+		Set<String> set = map.computeIfAbsent(keyElement, key -> new TreeSet<>());
 		set.add(valueElement);
 	}
 
