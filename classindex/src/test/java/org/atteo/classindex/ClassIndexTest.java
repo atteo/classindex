@@ -24,7 +24,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.atteo.classindex.processor.Important;
 import org.atteo.classindex.processor.Plugin;
 import org.atteo.classindex.second.ExtraPlugin;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 

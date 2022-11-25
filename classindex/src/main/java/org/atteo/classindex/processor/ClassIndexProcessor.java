@@ -45,7 +45,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementScanner6;
+import javax.lang.model.util.ElementScanner8;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
@@ -60,15 +60,15 @@ import org.atteo.classindex.IndexSubclasses;
  * Generates index files for {@link ClassIndex}.
  */
 public class ClassIndexProcessor extends AbstractProcessor {
-	private Map<String, Set<String>> subclassMap = new HashMap<>();
-	private Map<String, Set<String>> annotatedMap = new HashMap<>();
-	private Map<String, Set<String>> packageMap = new HashMap<>();
+	private final Map<String, Set<String>> subclassMap = new HashMap<>();
+	private final Map<String, Set<String>> annotatedMap = new HashMap<>();
+	private final Map<String, Set<String>> packageMap = new HashMap<>();
 
 	private boolean annotationDriven = true;
-	private Set<String> indexedAnnotations = new HashSet<>();
-	private Set<String> indexedSuperclasses = new HashSet<>();
-	private Set<String> indexedPackages = new HashSet<>();
-	private Set<TypeElement> javadocAlreadyStored = new HashSet<>();
+	private final Set<String> indexedAnnotations = new HashSet<>();
+	private final Set<String> indexedSuperclasses = new HashSet<>();
+	private final Set<String> indexedPackages = new HashSet<>();
+	private final Set<TypeElement> javadocAlreadyStored = new HashSet<>();
 
 	private Types types;
 	private Filer filer;
@@ -149,7 +149,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 					continue;
 				}
 				final PackageElement packageElement = getPackage(element);
-				element.accept(new ElementScanner6<Void, Void>() {
+				element.accept(new ElementScanner8<Void, Void>() {
 					@Override
 					public Void visitType(TypeElement typeElement, Void o) {
 						try {

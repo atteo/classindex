@@ -19,8 +19,10 @@ package org.atteo.classindex;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.Lists;
 
@@ -92,9 +94,11 @@ public class ClassFilterTest {
 				InnerClasses.InnerComponent.InnerInnerComponent.class);
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void shouldFailWhenUsingAnnotationWithoutRuntimeRetention() {
-		ClassFilter.only().annotatedWith(InheritedAnnotation.class);
+	    assertThrows(IllegalStateException.class, () -> {
+			ClassFilter.only().annotatedWith(InheritedAnnotation.class);
+		});
 	}
 
 	@Test

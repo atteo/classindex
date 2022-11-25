@@ -20,8 +20,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
 
 public class TomcatFromEclipseTest {
     private static class WeirdClassLoader extends ClassLoader {

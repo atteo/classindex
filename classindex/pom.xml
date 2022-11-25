@@ -13,11 +13,12 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
+			<version>30.1.1-jre</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -75,12 +76,6 @@
 						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-					<testSource>8</testSource>
-					<testTarget>8</testTarget>
-				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
