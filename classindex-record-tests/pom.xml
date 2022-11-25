@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.atteo.classindex</groupId>
 		<artifactId>parent</artifactId>
-		<version>3-SNAPSHOT</version>
+		<version>3.13</version>
 	</parent>
 	<artifactId>classindex-record-tests</artifactId>
 	<name>Atteo Class Index - Records Tests</name>
