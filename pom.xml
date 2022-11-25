@@ -8,7 +8,7 @@
 	</parent>
 	<groupId>org.atteo.classindex</groupId>
 	<artifactId>parent</artifactId>
-	<version>3-SNAPSHOT</version>
+	<version>3.12</version>
 	<packaging>pom</packaging>
 	<name>ClassIndex</name>
 	<description>ClassIndex is an annotation processor which at compile-time generates an index of classes implementing given interface, classes annotated by given annotation or placed in a common package.</description>
