@@ -129,7 +129,7 @@ public class ClassIndexProcessor extends AbstractProcessor {
 
 	@Override
 	public Set<String> getSupportedAnnotationTypes() {
-		return Collections.singleton("*");
+		return Collections.singleton("org.atteo.classindex.*");
 	}
 
 	@Override
