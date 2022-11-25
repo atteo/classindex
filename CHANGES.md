@@ -1,7 +1,10 @@
 Changes
 =======
+Version 3.13
+- revert changes for Gradle incremental processing
+
 Version 3.12
-- incremental processing in Gradle
+- ~~incremental processing in Gradle~~
 
 Version 3.11
 - do not crash on Java records
