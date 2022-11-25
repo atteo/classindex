@@ -40,6 +40,12 @@ it does not assume any inner workings of the ClassLoaders, it does not analyse b
         compile('org.atteo.classindex:classindex:3.4')
         annotationProcessor('org.atteo.classindex:classindex:3.4') // for gradle 5.0+
         ```
+    1. Scala
+        ```scala
+        libraryDependencies ++= Seq(
+            "org.atteo.classindex" % "classindex" % "3.4"
+        )
+        ```
     1. For other see: [Maven Central](https://search.maven.org/artifact/org.atteo.classindex/classindex/3.4/jar)
 1. Annotate your annotation with @IndexAnnotated
     ```java
